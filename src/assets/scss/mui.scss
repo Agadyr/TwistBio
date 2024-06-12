@@ -1,0 +1,11 @@
+@import 'vars';
+
+.MuiModal-root {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.MuiButton-containedSecondary {
+  background-color: $border-400 !important;
+}

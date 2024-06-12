@@ -1,0 +1,69 @@
+@import 'src/assets/scss/vars';
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 18%;
+}
+
+.errors {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 20vw;
+  min-width: 146px;
+  height: 100%;
+  padding-right: 12px;
+  overflow: hidden;
+  overflow-y: scroll;
+
+  &::-webkit-scrollbar {
+    width: 7px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #656565;
+  }
+}
+
+.item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  width: calc(100% - 20px);
+  min-width: 120px;
+  height: 16%;
+  min-height: 110px;
+  padding: 10px;
+  background-color: $border-100;
+  border: $border;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+
+  &:hover {
+    background-color: darken($border-100, 10);
+  }
+
+  &.active {
+    background-color: $secondary-200;
+    border-color: $secondary-600;
+  }
+
+  span:nth-of-type(4) {
+    display: -webkit-box;
+    overflow: hidden;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
+}

@@ -1,0 +1,35 @@
+.modal {
+  width: 600px;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.center {
+  display: flex;
+  gap: 80px;
+  margin-bottom: 80px;
+}
+
+.wrap {
+  display: flex;
+  gap: 10px;
+}
+
+.checkboxes {
+  display: flex;
+  flex-direction: column;
+}
+
+.bottom {
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}

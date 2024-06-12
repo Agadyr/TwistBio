@@ -1,0 +1,67 @@
+@import 'src/assets/scss/vars';
+
+.pair {
+  position: relative;
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  width: 300px;
+  height: 220px;
+  padding: 10px 10px 10px;
+  border: 1px solid $border-400;
+  border-radius: 4px;
+
+  .img {
+    width: 50%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .link {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    color: $border-200;
+    font-size: 60px;
+    translate: -50% -50%;
+  }
+
+  .remove {
+    position: absolute;
+    top: -8px;
+    right: -8px;
+    z-index: 1;
+    padding: 2px;
+    background-color: white;
+    border: 1px solid $border-600;
+
+    &:hover {
+      background-color: $border-100;
+    }
+  }
+
+  .pageNum {
+    position: absolute;
+    bottom: 3px;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    width: fit-content;
+    min-width: 10px;
+    height: 10px;
+    padding: 4px;
+    font-size: 12px;
+    line-height: 1;
+    background-color: white;
+    border: 1px solid $border-600;
+    border-radius: 50%;
+
+    &:nth-of-type(1) {
+      left: 72.5px;
+    }
+
+    &:nth-of-type(2) {
+      left: 227.5px;
+    }
+  }
+}

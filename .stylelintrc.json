@@ -1,0 +1,34 @@
+{
+  "extends": [
+    "stylelint-config-recommended-scss",
+    "stylelint-config-rational-order",
+    "stylelint-prettier/recommended"
+  ],
+  "plugins": [
+    "stylelint-order",
+    "stylelint-scss"
+  ],
+  "rules": {
+    "no-descending-specificity": null,
+    "scss/no-global-function-names": null,
+    "rule-empty-line-before": [
+      "always-multi-line",
+      { "ignore": ["first-nested"] }
+    ],
+    "at-rule-empty-line-before": [
+      "always",
+      { "ignore": ["first-nested"], "ignoreAtRules": ["if", "else", "import"] }
+    ],
+    "declaration-empty-line-before": "never",
+    "order/order": [
+      ["custom-properties", "declarations", "rules", "at-rules"]
+    ],
+    "length-zero-no-unit": true,
+    "selector-pseudo-class-no-unknown": [
+      true,
+      {
+        "ignorePseudoClasses": ["global", "export"]
+      }
+    ]
+  }
+}

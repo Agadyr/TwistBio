@@ -1,0 +1,34 @@
+bcd-web:
+
+  containers:
+    pqc-frontend:
+      image:
+        repository: "registry.biocad.ru/biocad/dis/ddma/pqc-group/pqc-frontend"
+      livenessProbe:
+        enabled: false
+      readinessProbe:
+        enabled: false
+      volumeMounts:
+      resources:
+        requests:
+          cpu: 100m
+          memory: 500Mi
+        limits:
+          cpu: 200m
+          memory: 1Gi
+      ports:
+      - containerPort: 80
+        name: frontend
+
+
+  imagePullSecrets:
+    - name: pqc-frontend-regcred
+
+  fullnameOverride: "pqc-frontend-dev"
+
+  service:
+    pqc-front:
+      - name: http
+        port: 80
+        protocol: TCP
+        targetPort: frontend

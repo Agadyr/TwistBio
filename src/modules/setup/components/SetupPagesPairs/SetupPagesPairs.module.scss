@@ -1,0 +1,32 @@
+@import 'src/assets/scss/vars';
+
+.pairs {
+  display: flex;
+  gap: 20px;
+  width: calc(100% - 40px);
+  height: 240px;
+  padding: 20px;
+  overflow: hidden;
+  border: $border;
+
+  &:hover {
+    overflow-x: auto;
+  }
+
+  &::-webkit-scrollbar {
+    height: 7px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 5px;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background: #656565;
+  }
+}

@@ -1,0 +1,11 @@
+apiVersion: v2
+name: pqc-frontend-chart
+description: A Helm chart for pqc-frontend
+type: application
+version: 0.0.1
+appVersion: "no"
+
+dependencies:
+  - name: bcd-web
+    version: v0.0.4
+    repository: "https://charts.k8s.biocad.ru/"

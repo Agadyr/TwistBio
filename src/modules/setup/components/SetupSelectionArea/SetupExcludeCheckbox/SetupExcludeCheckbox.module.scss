@@ -1,0 +1,18 @@
+@import 'assets/scss/vars';
+
+.check {
+  margin: 2px !important;
+}
+
+.checkModal {
+  width: 300px;
+  padding: 20px;
+  background-color: $bg;
+  border-radius: 8px;
+}
+
+.buttons {
+  display: flex;
+  gap: 20px;
+  justify-content: center;
+}

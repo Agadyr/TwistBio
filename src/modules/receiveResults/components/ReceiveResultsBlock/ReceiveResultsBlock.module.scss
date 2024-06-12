@@ -1,0 +1,29 @@
+@import 'assets/scss/vars';
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 70vh;
+}
+
+.loader {
+  scale: 2.5;
+}
+
+.error {
+  color: $danger-600;
+  font-size: 18px;
+}
+
+.success {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.check {
+  margin-bottom: 40px;
+  scale: 2.5;
+}

@@ -1,0 +1,47 @@
+@import 'src/assets/scss/vars';
+
+.upload {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 90%;
+  height: 150px;
+  margin-top: 10px;
+  border: $border;
+  cursor: pointer;
+  transition:
+    background-color 0.2s ease,
+    border 0.2s ease;
+
+  &:hover {
+    background-color: lighten($border-200, 10);
+  }
+
+  &.drag {
+    background-color: lighten($primary-600, 50);
+    border: 2px dashed $primary-600;
+  }
+
+  .icon {
+    color: $border-200;
+    font-size: 80px;
+    transition: color 0.2s ease;
+
+    &.drag {
+      color: $primary-600;
+    }
+
+    &.bottom {
+      font-size: 40px;
+    }
+  }
+
+  &.bottom {
+    position: absolute;
+    bottom: -2px;
+    z-index: 2;
+    width: 100%;
+    height: 40px;
+    margin-top: auto;
+  }
+}

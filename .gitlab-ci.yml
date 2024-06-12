@@ -1,0 +1,58 @@
+include:
+  - https://ci.biocad.ru/4/main.yml
+
+stages:
+  - build
+  - test:chart
+  - deploy
+
+Build pqc-frontend-image DEV:
+  stage: build
+  extends:
+    - .image.Build
+  environment:
+    name: dis-pqc-dev
+  variables:
+    BUILD_ARGS: >
+      --build-arg VITE_API_URL=${VITE_API_URL}
+  
+Test pqc-frontend-chart:
+  stage: test:chart
+  extends:
+    - .test.Helm
+  variables:
+    HELM_CHART: ./helm
+    HELM_VALUES: ./helm/values.yaml
+
+
+.deploy-pqc-frontend: &deploy-pqc-frontend
+  stage: deploy
+  extends:
+    - .k8s.Helm.Install
+  variables:
+    HELM_CHART: ./helm
+    HELM_VALUES: ./helm/values.yaml
+    HELM_VARS: |
+      bcd-web.containers.pqc-frontend.image.tag=${CI_COMMIT_SHORT_SHA}
+
+Deploy deploy-pqc-frontend DEV:
+  <<: *deploy-pqc-frontend
+  environment:
+    name: dis-pqc-dev
+  tags:
+    - kube-dev
+  rules:
+    - if: $CI_COMMIT_BRANCH == "dev"
+      when: always
+    - when: never
+
+# Deploy  deploy-pqc-frontend PROD:
+#    <<: *deploy-pqc-frontend
+#   environment:
+#     name: dis-pqc-prod
+#   tags:
+#     - kube-prod
+#   rules:
+#     - if: $CI_COMMIT_BRANCH == "dev"
+#       when: always
+#     - when: never

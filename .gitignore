@@ -1,0 +1,15 @@
+.idea
+node_modules
+build
+storybook-static
+*.log
+.env
+.turbo
+.yarn/cache
+.yarn/install-state.gz
+.eslintcache
+**/.DS_Store
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/

@@ -1,0 +1,113 @@
+{
+  "editor.formatOnSave": true,
+  "editor.tabSize": 2,
+  "eslint.format.enable": true,
+  "[javascript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "editor.formatOnSave": true
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "editor.formatOnSave": true
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "esbenp.prettier-vscode",
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    },
+    "editor.formatOnSave": true
+  },
+  "cSpell.language": "en,ru",
+  "cSpell.words": [
+    "actuals",
+    "addresability",
+    "ahooks",
+    "Archivation",
+    "artcodes",
+    "Augmento",
+    "bgcolor",
+    "brotli",
+    "Coef",
+    "Coefs",
+    "conso",
+    "copacker",
+    "Copackers",
+    "Copaking",
+    "crossdock",
+    "Crystall",
+    "Cust",
+    "Delisting",
+    "fqcy",
+    "granularities",
+    "hier",
+    "hocs",
+    "Hubbing",
+    "hygen",
+    "Jenius",
+    "jpegtran",
+    "Krub",
+    "LOWCODE",
+    "Masterdata",
+    "Metrial",
+    "opti",
+    "Optimilk",
+    "optipng",
+    "Ppds",
+    "Pped",
+    "Premade",
+    "prgm",
+    "Purch",
+    "Quaran",
+    "Randomizer",
+    "Reco",
+    "replen",
+    "Shipto",
+    "spectr",
+    "splitted",
+    "stylelint",
+    "svgr",
+    "Templ",
+    "Tetris",
+    "toastify",
+    "Tradi",
+    "truetype",
+    "Undeployed",
+    "Uoms",
+    "usehooks",
+    "WHDS",
+    "xaxis",
+    "xaxistooltip",
+    "yaxis",
+    "Гранулярность",
+    "деманд",
+    "ДРЛС",
+    "каннибализацию",
+    "копакерам",
+    "Лоадер",
+    "мастердате",
+    "Неактивность",
+    "рандомизатора",
+    "референсного",
+    "Сорсинг",
+    "Табы",
+    "Тултип"
+  ],
+  "css.validate": false,
+  "scss.validate": false,
+  "stylelint.enable": true,
+  "stylelint.packageManager": "yarn",
+  "stylelint.validate": ["css", "scss"],
+  "stylelint.configFile": ".stylelintrc.json",
+  "eslint.packageManager": "yarn",
+  "[javascript][typescript][typescriptreact]": {
+    "editor.codeActionsOnSave": {
+      "source.fixAll": "explicit"
+    }
+  }
+}

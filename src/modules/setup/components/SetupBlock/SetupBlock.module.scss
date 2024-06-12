@@ -1,0 +1,16 @@
+@import 'assets/scss/vars';
+
+.container {
+  user-select: none;
+}
+
+.comparisonZone {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  padding-top: 8px;
+}
+
+.next {
+  margin-top: 20px !important;
+}

@@ -1,0 +1,17 @@
+@import 'src/assets/scss/vars';
+
+.fields {
+  margin: 40px 0;
+}
+
+.selects {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.selects2 {
+  display: flex;
+  gap: 20px;
+  margin-bottom: 20px;
+}

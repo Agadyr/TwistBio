@@ -1,0 +1,19 @@
+@import 'assets/scss/vars';
+
+.modal {
+  position: relative;
+  display: flex;
+  gap: 20px;
+  width: 990px;
+  height: 80%;
+  padding: 20px;
+  background-color: $bg;
+  border-radius: 4px;
+}
+
+.center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+}

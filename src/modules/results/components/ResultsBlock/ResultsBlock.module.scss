@@ -1,0 +1,49 @@
+@import 'src/assets/scss/vars';
+
+.top {
+  display: flex;
+  gap: 20px;
+  height: 130px;
+  margin-bottom: 15px;
+
+  .buttons {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-between;
+    width: 10%;
+    height: 100%;
+  }
+}
+
+.bottom {
+  display: flex;
+  gap: 15px;
+  height: calc(100vh - 120px);
+  margin-bottom: 20px;
+}
+
+.modal {
+  display: flex;
+  gap: 40px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px;
+  background-color: white;
+  border-radius: 8px;
+}
+
+.box {
+  width: 300px;
+  height: 300px;
+  margin-top: 20px;
+  padding: 20px;
+  object-fit: cover;
+  border: $border;
+  border-radius: 5px;
+}
+
+.links {
+  display: flex;
+  gap: 15px;
+}
