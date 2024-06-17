@@ -35,7 +35,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
       const image = new Image()
       image.crossOrigin = 'Anonymous'
       image.src = imgSrc
-      console.log(imgSrc, image)
       image.onload = () => {
         const canvas = canvasRef.current
         if (canvas) {
@@ -56,7 +55,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
               croppedCanvas.width = cropWidth
               croppedCanvas.height = cropHeight
               croppedCtx.drawImage(canvas, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
-              console.log(croppedCanvas.toDataURL())
               setCroppedImgSrc(croppedCanvas.toDataURL())
             }
           }
@@ -72,7 +70,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     if (referencePage?.previewMlCroppedFullUrl && referencePage?.number !== undefined) {
       setReferenceImgSrc(referencePage?.previewMlCroppedFullUrl)
     } else if (referencePage?.previewFullUrl && referencePage.number !== undefined) {
-      console.log('sadfasd')
       pdfPreviewManager
         .getPreview(referencePage?.previewFullUrl, referencePage?.number)
         .then((img) => setSampleImgSrc(img))
@@ -84,7 +81,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     if (samplePage?.previewMlCroppedFullUrl && samplePage?.number !== undefined) {
       setSampleImgSrc(samplePage?.previewMlCroppedFullUrl)
     } else if (samplePage?.previewFullUrl && samplePage.number !== undefined) {
-      console.log('sadfasd')
       pdfPreviewManager
         .getPreview(samplePage?.previewFullUrl, samplePage?.number)
         .then((img) => setSampleImgSrc(img))
@@ -99,7 +95,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
 
     const cropRatio = error.sampleCropRatio || error.referenceCropRatio
     loadAndCropImage(sampleImgSrc, cropRatio, setCroppedSampleImgSrc)
-    console.log(croppedSampleImgSrc, 'CROPEPDCAMPLE')
   }, [sampleImgSrc, canvasRef.current])
 
   useEffect(() => {
@@ -115,12 +110,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     if (pairErrors && pairErrors?.maskFullUrl && canvasRef.current) {
       loadAndCropImage(pairErrors?.maskFullUrl, error.sampleCropRatio, setCroppedMaskSrc)
     }
-    // if (referencePage && referencePage?.previewMlCroppedFullUrl && canvasRef.current) {
-    //   loadAndCropImage(referencePage?.previewMlCroppedFullUrl, error.sampleCropRatio, setCroppedReferenceImgSrc)
-    // }
-    // if (samplePage && samplePage?.previewMlCroppedFullUrl && canvasRef.current) {
-    //   loadAndCropImage(samplePage?.previewMlCroppedFullUrl, error.sampleCropRatio, setCroppedSampleImgSrc)
-    // }
   }, [
     pairErrors?.maskFullUrl,
     referencePage?.previewMlCroppedFullUrl,
@@ -176,11 +165,30 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
       {error.type.name === 'Опечатка' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
           <Box>
-            <Box className={classes.imgWrap}>
-              <Typography>1)Оброзующее</Typography>
-              Правильно
-              <Typography>2)вещество</Typography>
-              Правильно
+            <Box className={classes.imgx2}>
+              <Typography variant="h5">1) {error.content[0]}</Typography>
+              {error.bestMatch[0] === error.content[0] ? (
+                <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
+              ) : (
+                <div>
+                  <Typography variant="h6">Правильно:</Typography>
+                  <Typography style={{ color: 'red' }} variant="h6">
+                    {error.bestMatch[0]}
+                  </Typography>
+                </div>
+              )}
+
+              <Typography variant="h5"> 2) {error.content[1]} </Typography>
+              {error.bestMatch[1] === error.content[1] ? (
+                <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
+              ) : (
+                <div>
+                  <Typography variant="h6">Правильно:</Typography>
+                  <Typography style={{ color: 'red' }} variant="h6">
+                    {error.bestMatch[1]}
+                  </Typography>
+                </div>
+              )}
             </Box>
           </Box>
           <Box className={classes.imgWrap}>

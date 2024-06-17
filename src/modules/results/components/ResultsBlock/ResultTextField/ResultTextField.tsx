@@ -23,7 +23,7 @@ export const ResultTextField: FC<ResultTextFieldProps> = ({ name, error, label }
             helperText={error}
             label={label}
             onChange={onChange}
-            sx={{ width: 800 }}
+            sx={{ width: 1100 }}
             value={value}
             variant="outlined"
           />
