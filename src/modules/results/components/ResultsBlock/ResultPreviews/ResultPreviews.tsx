@@ -110,7 +110,6 @@ export const ResultPreviews = () => {
 
       <Box className={classes.viewItem}>
         <span className={classes.itemLabel}>Образец</span>
-        <button className={classes.transparency}>asdad</button>
         <TransformWrapper onZoom={handleZoom}>
           <TransformComponent contentStyle={contentStyle}>
             <div className={classes.sampleWrapContainer}>

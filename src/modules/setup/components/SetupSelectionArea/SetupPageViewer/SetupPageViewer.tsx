@@ -1,7 +1,7 @@
 import { FC, useEffect, useRef, useState } from 'react'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 
-import { Box } from '@mui/material'
+import { Box, Button } from '@mui/material'
 import { useParams } from '@tanstack/react-router'
 import cx from 'clsx'
 import { FilePreview } from 'components/common/FilePreview'
@@ -9,6 +9,7 @@ import { useComparison } from 'modules/comparison/queries'
 import { ComparisonOutlineResponse } from 'modules/setup/api'
 import { initCropRatio } from 'modules/setup/constants/initCropRatio'
 import { stagesWithoutFrame } from 'modules/setup/constants/setup'
+import { useHighlightPageOutline } from 'modules/setup/queries/useHighlightPageOutline'
 import { useSelectedPages } from 'modules/setup/store/useSelectedPages'
 import { Frame } from 'ui/Frame'
 
@@ -32,7 +33,7 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
     useSelectedPages((state) =>
       isReference ? state.referencePageFrames[activePageId] : state.samplePageFrames[activePageId],
     ) || initCropRatio
-  // const { highlightPageOutline } = useHighlightPageOutline()
+  const { highlightPageOutline } = useHighlightPageOutline()
 
   const removedPages = useSelectedPages((state) => state.removedPages[areaType])
   const isRemovedPage = removedPages.includes(activePageId)
@@ -64,15 +65,15 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
     <Box className={cx(classes.preview, { [classes.right]: !isReference })}>
       {activePage && (
         <>
-          {/* <Button
-            className={classes.buttons}
+          <Button
+            className={`${classes.buttons} btn btn-purple`}
             onClick={() => highlightPageOutline({ pageId: activePageId, comparisonId })}
             size="small"
             variant="contained"
           >
             Выделить контур
-          </Button> */}
-          <TransformWrapper contentStyle={contentStyle2} panning={{ lockAxisX: true, lockAxisY: true }}>
+          </Button>
+          <TransformWrapper panning={{ lockAxisX: true, lockAxisY: true }}>
             <TransformComponent contentStyle={contentStyle}>
               <div className={classes.previewContainer}>
                 <div className={classes.innerContainer} ref={containerRef}>

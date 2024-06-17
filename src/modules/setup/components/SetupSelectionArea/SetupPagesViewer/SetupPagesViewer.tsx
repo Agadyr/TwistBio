@@ -40,7 +40,6 @@ export const SetupPagesViewer: FC<SetupPagesViewerProps> = ({ accept, filesPages
     estimateSize: () => 200,
     overscan: 3,
   })
-
   return (
     <Box className={cx(classes.pages, { [classes.right]: !isReference })}>
       {filesPages.length > 0 && (
@@ -82,7 +81,6 @@ export const SetupPagesViewer: FC<SetupPagesViewerProps> = ({ accept, filesPages
                         <CloseIcon />
                       </IconButton>
                     )}
-
                     <FilePreview className={classes.img} fileUrl={previewFullUrl} pageNum={number} />
                   </Box>
                 </div>

@@ -27,11 +27,13 @@ export const SetupFileInputModal: FC<SetupFileInputModalProps> = ({
 }) => {
   const [pageAmount, setPageAmount] = useState(0)
   useEffect(() => {
-    if (fileResponse?.previewFullUrl) {
+    if (fileResponse?.previewFullUrl.includes('pdf')) {
       pdfPreviewManager
         .getPdfPages(fileResponse.previewFullUrl)
         .then(setPageAmount)
         .catch(() => toast.error('Не удалось загрузить превью страницы'))
+    } else {
+      return
     }
   }, [fileResponse])
   return (

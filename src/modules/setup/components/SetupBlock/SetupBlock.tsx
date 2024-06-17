@@ -20,7 +20,6 @@ export const SetupBlock = () => {
     }
     navigate({ to: '/$comparisonId/receive-results', params })
   }
-
   return (
     <Box className={classes.container}>
       <Typography component="p" marginBottom={1} variant="h6">

@@ -42,23 +42,25 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
         </Box>
       )}
       {(error.type.name === 'Баркод' || error.type.name === 'Штрихкод') && (
-        <Box className={classes.selects2}>
-          <ResultSelect
-            error={errorStatusesRequestError?.message}
-            label={error.status ? error.status.name : 'Статус'}
-            name="select1"
-            selectOptions={errorStatuses}
-          />
-          <ResultSelect
-            error={errorTypesRequestError?.message}
-            label={error.type ? error.type.name : 'Тип'}
-            name="select2"
-            selectOptions={errorTypes}
-          />
-        </Box>
+        <>
+          <Box className={classes.selects2}>
+            <ResultSelect
+              error={errorStatusesRequestError?.message}
+              label={error.status ? error.status.name : 'Статус'}
+              name="select1"
+              selectOptions={errorStatuses}
+            />
+            <ResultSelect
+              error={errorTypesRequestError?.message}
+              label={error.type ? error.type.name : 'Тип'}
+              name="select2"
+              selectOptions={errorTypes}
+            />
+          </Box>
+          <Typography variant="h6">Распознано: {error.detectedValue}</Typography>
+        </>
       )}
-      <Typography variant="h6">Распознано: {error.detectedValue}</Typography>
-      <ResultTextField error={undefined} name="comment" />
+      <ResultTextField error={undefined} label="Комментарий" name="comment" />
     </Box>
   )
 }

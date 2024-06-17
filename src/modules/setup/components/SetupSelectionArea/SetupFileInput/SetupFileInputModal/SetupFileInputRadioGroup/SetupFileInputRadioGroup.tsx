@@ -2,12 +2,14 @@ import { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 
 import { Box, Button, FormControlLabel, Radio, RadioGroup, TextField, Typography } from '@mui/material'
 import { useParams } from '@tanstack/react-router'
+import axios from 'axios'
 import { ComparisonFileResponse } from 'modules/setup/api'
 import { checkTextFieldValue } from 'modules/setup/helpers/checkTextFieldValue'
 import { convertToArrayOfNumbers } from 'modules/setup/helpers/convertToArrayOfNumbers'
 import { convertToPagesArray } from 'modules/setup/helpers/convertToPagesArray'
 import { PagesUploadVariants } from 'modules/setup/interfaces/setup'
 import { useSendFilePages } from 'modules/setup/queries'
+import { useComparisonFilesPages } from 'modules/setup/queries/useComparisonFilesPages'
 
 import classes from './SetupFileInputRadioGroup.module.scss'
 
@@ -30,8 +32,8 @@ export const SetupFileInputRadioGroup: FC<SetupFileInputRadioGroupProps> = ({
   const params = useParams({ from: '/_comparison/$comparisonId/setup' })
   const comparisonId = Number(params.comparisonId)
   const { sendFilePages } = useSendFilePages(comparisonId)
-
-  const uploadFiles = () => {
+  const { filesPages, refetchFilesPages } = useComparisonFilesPages(comparisonId, false)
+  const uploadFiles = async () => {
     if (error || !fileResponse) {
       return
     }
@@ -46,9 +48,23 @@ export const SetupFileInputRadioGroup: FC<SetupFileInputRadioGroupProps> = ({
         return
       }
     }
-    sendFilePages({ comparisonFileId: fileResponse.id, payload: { pageNumbers } })
-    setOpenModal(false)
-    setTextFieldValue('')
+    try {
+      const response = await axios.get(fileResponse?.previewFullUrl, {
+        responseType: 'arraybuffer',
+      })
+      const contentType = response.headers['content-type']
+      if (contentType.includes('image/')) {
+        refetchFilesPages()
+        setOpenModal(false)
+        setTextFieldValue('')
+      } else {
+        sendFilePages({ comparisonFileId: fileResponse.id, payload: { pageNumbers } })
+        setOpenModal(false)
+        setTextFieldValue('')
+      }
+    } catch (errorRes) {
+      console.log(errorRes)
+    }
   }
 
   useEffect(() => {
