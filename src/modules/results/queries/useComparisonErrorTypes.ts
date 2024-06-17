@@ -9,7 +9,6 @@ export const useComparisonErrorTypes = () => {
     // queryFn: comparisonErrorsApi.getErrorTypes,
     queryFn: () => Promise.resolve(errorsType),
   })
-
   return {
     errorTypes: data,
     errorTypesAreLoading: isPending,

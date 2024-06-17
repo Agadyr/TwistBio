@@ -1,4 +1,5 @@
 import { FC, useEffect, useRef, useState } from 'react'
+import { toast } from 'react-toastify'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 
 import { Box, Button } from '@mui/material'
@@ -9,11 +10,12 @@ import { useComparison } from 'modules/comparison/queries'
 import { ComparisonOutlineResponse } from 'modules/setup/api'
 import { initCropRatio } from 'modules/setup/constants/initCropRatio'
 import { stagesWithoutFrame } from 'modules/setup/constants/setup'
-import { useHighlightPageOutline } from 'modules/setup/queries/useHighlightPageOutline'
 import { useSelectedPages } from 'modules/setup/store/useSelectedPages'
+import { pdfPreviewManager } from 'packages/pdfPreview'
 import { Frame } from 'ui/Frame'
 
 import classes from './SetupPageViewer.module.scss'
+import { getPackage } from './store'
 
 interface Props {
   isReference?: boolean
@@ -22,10 +24,12 @@ interface Props {
 
 export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
   const containerRef = useRef<HTMLDivElement>(null)
-  // const params = useParams({ from: '/_comparison/$comparisonId/setup' })
-  // const comparisonId = Number(params.comparisonId)
+  const [imgSrc, setImgSrc] = useState<string | undefined>(undefined)
   const areaType = isReference ? 'reference' : 'sample'
   const activePageId = useSelectedPages((state) => state.activePageIndex[areaType])
+  const fetchPage = getPackage((state) => state.fetchPage)
+  const data = getPackage((state) => state.data)
+  const normBoxCoordinates = data?.norm_box_coordinates
   const setPageFrame = useSelectedPages((state) =>
     isReference ? state.setReferencePageFrame : state.setSamplePageFrame,
   )
@@ -33,8 +37,6 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
     useSelectedPages((state) =>
       isReference ? state.referencePageFrames[activePageId] : state.samplePageFrames[activePageId],
     ) || initCropRatio
-  const { highlightPageOutline } = useHighlightPageOutline()
-
   const removedPages = useSelectedPages((state) => state.removedPages[areaType])
   const isRemovedPage = removedPages.includes(activePageId)
   const activePage = filesPages.find((page) => page.id === activePageId)
@@ -43,6 +45,18 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
   const comparisonId = Number(params.comparisonId)
   const { comparison, isComparisonLoading } = useComparison(comparisonId)
   const [withFrame, setWithFrame] = useState(true)
+  const toFile = async () => {
+    try {
+      if (imgSrc) {
+        const response = await fetch(imgSrc)
+        const blob = await response.blob()
+        const file = new File([blob], 'file.png', { type: blob.type })
+        fetchPage(file, comparison?.stage.id)
+      }
+    } catch (error) {
+      console.error('Error converting image to file:', error)
+    }
+  }
 
   useEffect(() => {
     if (!isReference || isComparisonLoading || !comparison?.stage.name) {
@@ -51,15 +65,22 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
 
     setWithFrame(!stagesWithoutFrame.includes(comparison?.stage.name as string))
   }, [comparison?.stage.name, isComparisonLoading, isReference])
+  useEffect(() => {
+    if (activePage?.previewFullUrl.includes('pdf')) {
+      pdfPreviewManager
+        .getPreview(activePage?.previewFullUrl, 1)
+        .then((img) => setImgSrc(img))
+        .catch(() => toast.error('Не удалось загрузить превью страницы'))
+    } else {
+      setImgSrc(activePage?.previewFullUrl)
+    }
+  }, [activePage])
+
   const contentStyle = {
     width: '100%',
     height: '100%',
     display: 'flex',
     justifyContent: 'center',
-  }
-  const contentStyle2 = {
-    width: '100%',
-    height: '100%',
   }
   return (
     <Box className={cx(classes.preview, { [classes.right]: !isReference })}>
@@ -67,7 +88,7 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
         <>
           <Button
             className={`${classes.buttons} btn btn-purple`}
-            onClick={() => highlightPageOutline({ pageId: activePageId, comparisonId })}
+            onClick={() => toFile()}
             size="small"
             variant="contained"
           >
@@ -86,7 +107,7 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
 
                 {withFrame && (
                   <Frame
-                    cropRatio={pageFrame}
+                    cropRatio={normBoxCoordinates ?? pageFrame}
                     onFrameChange={(cropRatio) => {
                       setPageFrame(activePageId, cropRatio)
                     }}

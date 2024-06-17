@@ -20,9 +20,7 @@ export const ResultErrorsModal: FC<ResultErrorsModalProps> = ({ openModal, setOp
   const methods = useInitForm<any>({})
 
   const { handleSubmit } = methods
-  const onSubmit: SubmitHandler<any> = (obj) => {
-    console.log(obj)
-  }
+  const onSubmit: SubmitHandler<any> = (obj) => {}
   const onError = () => toast.error('Что то пошло не так, попробуйте еще раз.')
   return (
     <Modal onClose={() => setOpenModal(false)} open={openModal}>

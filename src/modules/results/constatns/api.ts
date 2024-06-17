@@ -1,23 +1,22 @@
 import { ComparisonError, ComparisonPairErrors } from 'modules/results/api'
 
-export const errors: ComparisonError[] = [
+export const errorsStatus: ComparisonError[] = [
   { name: 'Не обработано', code: 'code1', id: 1 },
   { name: 'Ошибка', code: 'code2', id: 2 },
   { name: 'Не Ошибка', code: 'code3', id: 3 },
 ]
 
 export const errorsType: ComparisonError[] = [
-  { name: 'Объект', code: 'code1', id: 1 },
-  { name: 'Текст', code: 'code2', id: 2 },
-  { name: 'Баркод', code: 'code3', id: 3 },
-  { name: 'Штрих код', code: 'code3', id: 4 },
+  { name: 'Объект', code: 'code4', id: 1 },
+  { name: 'Текст', code: 'code5', id: 2 },
+  { name: 'Баркод', code: 'code6', id: 3 },
+  { name: 'Штрих код', code: 'code7', id: 4 },
 ]
-
 export const errorsSever: ComparisonError[] = [
-  { name: 'Высокая', code: 'code1', id: 1 },
-  { name: 'Средняя', code: 'code2', id: 2 },
-  { name: 'Низкая', code: 'code3', id: 3 },
-  { name: 'Не заполнено', code: 'code3', id: 4 },
+  { name: 'Высокая', code: 'code8', id: 1 },
+  { name: 'Средняя', code: 'code9', id: 2 },
+  { name: 'Низкая', code: 'code10', id: 3 },
+  { name: 'Не заполнено', code: 'code11', id: 4 },
 ]
 
 export const pairErrors: ComparisonPairErrors = {

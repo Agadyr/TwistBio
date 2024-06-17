@@ -22,7 +22,6 @@ interface Props {
 export const Frame: FC<Props> = ({ scale, cropRatio, resizeable = false, refContainer, onFrameChange }) => {
   const [frameData, setFrameData] = useState<FrameData>(initFrame)
   const [containerRect, setContainerRect] = useState<DOMRect>()
-
   const { refResizerLeft, refResizerTop, refResizerRight, refResizerBottom } = useResizeableFrame({
     active: resizeable,
     frameData,
