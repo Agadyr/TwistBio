@@ -9,7 +9,6 @@ export const useComparisonFilesPages = (comparisonId: number, isReference: boole
     queryFn: () => comparisonPageApi.getComparisonFilesPages(comparisonId, isReference),
     enabled: !!comparisonId,
   })
-  console.log(data, 'DAta')
   return {
     filesPages: data,
     filesPagesAreLoading: isPending,

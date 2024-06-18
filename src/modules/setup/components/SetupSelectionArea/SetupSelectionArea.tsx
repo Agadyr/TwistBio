@@ -14,10 +14,9 @@ interface SetupSelectionAreaProps {
   isReference?: boolean
 }
 
-export const SetupSelectionArea: FC<SetupSelectionAreaProps> = ({ isReference = false, comparisonId }) => {
+export const SetupSelectionArea: FC<SetupSelectionAreaProps> = ({ isReference, comparisonId }) => {
   const { filesPages } = useComparisonFilesPages(comparisonId, isReference)
   const pages = filesPages?.items || []
-
   return (
     <Box width="100%">
       <Box className={classes.area}>

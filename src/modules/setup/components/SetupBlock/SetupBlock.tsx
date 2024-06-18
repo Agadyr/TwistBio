@@ -29,7 +29,7 @@ export const SetupBlock = () => {
       <Box>
         <Box className={classes.comparisonZone}>
           <SetupSelectionArea comparisonId={numComparisonId} isReference />
-          <SetupSelectionArea comparisonId={numComparisonId} />
+          <SetupSelectionArea comparisonId={numComparisonId} isReference={false} />
         </Box>
         <SetupPagesPairs />
       </Box>
