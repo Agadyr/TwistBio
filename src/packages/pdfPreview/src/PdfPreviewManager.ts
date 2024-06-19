@@ -18,7 +18,9 @@ class PdfPreviewManager {
 
   async getPreview(fileUrl: string, pageNum: number) {
     const pdf = await this.#getPdfPromise(fileUrl)
+
     const preview = await this.#getPdfPreviewPromise(pdf, fileUrl, pageNum)
+
     return preview
   }
 
@@ -72,7 +74,7 @@ class PdfPreviewManager {
       return savedPreview
     }
     const page = await pdf.getPage(pageNum)
-    const viewport = page.getViewport({ scale: 1.5 })
+    const viewport = page.getViewport({ scale: 4.0 })
     const canvas = document.createElement('canvas')
 
     canvas.width = viewport.width

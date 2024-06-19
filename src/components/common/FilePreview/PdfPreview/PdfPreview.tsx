@@ -16,7 +16,6 @@ interface Props {
 
 export const PdfPreview = forwardRef<HTMLImageElement, Props>(({ fileUrl, pageNum, className, children }, ref) => {
   const [imgSrc, setImgSrc] = useState('')
-
   useEffect(() => {
     pdfPreviewManager
       .getPreview(fileUrl, pageNum)
@@ -32,7 +31,7 @@ export const PdfPreview = forwardRef<HTMLImageElement, Props>(({ fileUrl, pageNu
         </Box>
       ) : (
         <>
-          <img className={className} ref={ref} src={imgSrc} />
+          <img className={cx(className, classes.img)} ref={ref} src={imgSrc} />
           {children}
         </>
       )}

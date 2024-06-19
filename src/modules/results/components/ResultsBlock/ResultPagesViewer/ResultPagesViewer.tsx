@@ -34,7 +34,6 @@ export const ResultPagesViewer = () => {
             <FilePreview
               className={cx(classes.img, { [classes.active]: index === selectedPair })}
               fileUrl={previewFullUrl}
-              isRp={false}
               pageNum={number}
             />
           </Box>
