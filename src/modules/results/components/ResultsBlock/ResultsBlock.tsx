@@ -44,9 +44,11 @@ export const ResultsBlock = () => {
           <IconButton onClick={() => setOpenModal(true)}>
             <FontAwesomeIcon className={filter ? 'filter-selected' : ''} icon={faFilter} />
           </IconButton>
-          <Button onClick={() => setOpenModalCard(true)} variant="contained">
-            цв. карта
-          </Button>
+          {!isTextComparison && (
+            <Button onClick={() => setOpenModalCard(true)} variant="contained">
+              цв. карта
+            </Button>
+          )}
         </Box>
       </Box>
       <ResultFiltersModal onChange={onChange} openModal={openModal} setOpenModal={setOpenModal} />
