@@ -25,18 +25,27 @@ interface Props {
 export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined)
+  const [file, setFile] = useState<File | undefined>(undefined)
   const areaType = isReference ? 'reference' : 'sample'
   const activePageId = useSelectedPages((state) => state.activePageIndex[areaType])
-  const fetchPage = getPackage((state) => state.fetchPage)
-  const data = getPackage((state) => state.data)
-  const normBoxCoordinates = data?.norm_box_coordinates
+  const { fetchPage, normBoxCoordinates, dataSample } = getPackage((state) => ({
+    fetchPage: state.fetchPage,
+    normBoxCoordinates: state.data,
+    dataSample: state.dataSample,
+  }))
+
   const setPageFrame = useSelectedPages((state) =>
     isReference ? state.setReferencePageFrame : state.setSamplePageFrame,
   )
+
   const pageFrame =
     useSelectedPages((state) =>
       isReference ? state.referencePageFrames[activePageId] : state.samplePageFrames[activePageId],
     ) || initCropRatio
+
+  // const setReferencePageFrame = useSelectedPages((state) => state.setReferencePageFrame)
+  // const setSamplePageFrame = useSelectedPages((state) => state.setSamplePageFrame)
+
   const removedPages = useSelectedPages((state) => state.removedPages[areaType])
   const isRemovedPage = removedPages.includes(activePageId)
   const activePage = filesPages.find((page) => page.id === activePageId)
@@ -45,26 +54,14 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
   const comparisonId = Number(params.comparisonId)
   const { comparison, isComparisonLoading } = useComparison(comparisonId)
   const [withFrame, setWithFrame] = useState(true)
-  const toFile = async () => {
-    try {
-      if (imgSrc) {
-        const response = await fetch(imgSrc)
-        const blob = await response.blob()
-        const file = new File([blob], 'file.png', { type: blob.type })
-        fetchPage(file, comparison?.stage.id)
-      }
-    } catch (error) {
-      console.error('Error converting image to file:', error)
-    }
-  }
 
   useEffect(() => {
     if (!isReference || isComparisonLoading || !comparison?.stage.name) {
       return
     }
-
     setWithFrame(!stagesWithoutFrame.includes(comparison?.stage.name as string))
   }, [comparison?.stage.name, isComparisonLoading, isReference])
+
   useEffect(() => {
     if (activePage?.previewFullUrl.includes('pdf')) {
       pdfPreviewManager
@@ -74,7 +71,29 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
     } else {
       setImgSrc(activePage?.previewFullUrl)
     }
-  }, [activePage])
+  }, [activePage, isReference])
+
+  const toFile = async () => {
+    if (imgSrc) {
+      try {
+        const response = await fetch(imgSrc)
+        const blob = await response.blob()
+        const newfile = new File([blob], 'file.png', { type: blob.type })
+        setFile((prevfile) => {
+          console.log(newfile)
+          return newfile
+        })
+      } catch (error) {
+        console.error('Error converting image to file:', error)
+      }
+    }
+  }
+
+  useEffect(() => {
+    if (file) {
+      fetchPage(file, comparison?.stage.id, isReference)
+    }
+  }, [file, fetchPage, comparison?.stage.id])
 
   const contentStyle = {
     width: '100%',
@@ -86,14 +105,22 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
     <Box className={cx(classes.preview, { [classes.right]: !isReference })}>
       {activePage && (
         <>
-          <Button
-            className={`${classes.buttons} btn btn-purple`}
-            onClick={() => toFile()}
-            size="small"
-            variant="contained"
-          >
-            Выделить контур
-          </Button>
+          {!isReference && (
+            <Button
+              className={`${classes.buttons} btn btn-purple
+               ${comparison?.stage.comparisonType === 'текстовое сравнение' ? classes.buttons : classes.dp}`}
+              onClick={toFile}
+              size="small"
+              variant="contained"
+            >
+              Выделить контур
+            </Button>
+          )}
+          {comparison?.stage.comparisonType !== 'текстовое сравнение' && (
+            <Button className={`${classes.buttons} btn btn-purple`} onClick={toFile} size="small" variant="contained">
+              Выделить контур
+            </Button>
+          )}
           <TransformWrapper panning={{ lockAxisX: true, lockAxisY: true }}>
             <TransformComponent contentStyle={contentStyle}>
               <div className={classes.previewContainer}>
@@ -105,9 +132,20 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
                   />
                 </div>
 
-                {withFrame && (
+                {withFrame && isReference && (
                   <Frame
-                    cropRatio={normBoxCoordinates ?? pageFrame}
+                    cropRatio={normBoxCoordinates.norm_box_coordinates || pageFrame}
+                    onFrameChange={(cropRatio) => {
+                      setPageFrame(activePageId, cropRatio)
+                    }}
+                    refContainer={containerRef}
+                    resizeable
+                    scale={1}
+                  />
+                )}
+                {withFrame && !isReference && (
+                  <Frame
+                    cropRatio={dataSample.norm_box_coordinates || pageFrame}
                     onFrameChange={(cropRatio) => {
                       setPageFrame(activePageId, cropRatio)
                     }}

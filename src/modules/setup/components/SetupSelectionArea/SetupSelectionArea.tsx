@@ -23,7 +23,6 @@ export const SetupSelectionArea: FC<SetupSelectionAreaProps> = ({ isReference, c
         <Typography className={cx(classes.areaName, { [classes.right]: isReference })}>
           {isReference ? 'Эталон' : 'Образец'}
         </Typography>
-
         <SetupPagesViewer filesPages={pages} isReference={isReference} />
         <SetupPageViewer filesPages={pages} isReference={isReference} />
       </Box>

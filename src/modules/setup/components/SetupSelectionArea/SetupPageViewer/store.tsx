@@ -3,24 +3,30 @@ import { create } from 'zustand'
 
 interface PackageState {
   data: any
+  dataSample: any
   isClickToContur: boolean
-  fetchPage: (file: File, stage: any) => Promise<void>
-  toChangetoTrue: any
+  fetchPage: (file: File, stage: any, isReference?: boolean) => Promise<void>
+  toChangetoTrue: () => void
 }
 
 export const getPackage = create<PackageState>((set) => ({
-  data: {},
+  data: [0, 0, 0, 0],
+  dataSample: [0, 0, 0, 0],
   isClickToContur: false,
-  fetchPage: async (file: File, stage: any) => {
+  fetchPage: async (file: File, stage: any, isReference?: boolean) => {
     const form = new FormData()
     form.append('file', file)
     try {
-      const res: AxiosResponse<PackageState[]> = await axios.post(
+      const res: AxiosResponse<PackageState> = await axios.post(
         `http://api.statanly.com:9135/get-package?stage=${stage}`,
         form,
       )
-      console.log(res)
-      set({ data: res.data })
+      console.log(isReference)
+      if (isReference) {
+        set({ data: res.data })
+      } else {
+        set({ dataSample: res.data })
+      }
     } catch (error) {
       console.error('Error fetching comparisons:', error)
     }
