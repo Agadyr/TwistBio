@@ -19,10 +19,7 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
   const { errorTypesRequestError } = useComparisonErrorTypes()
   return (
     <Box className={classes.fields}>
-      {(error.type.name === 'Объект' ||
-        error.type.name === 'Текст' ||
-        error.type.name === 'Баркод' ||
-        error.type.name === 'Текст') && (
+      {(error.type.name === 'Объект' || error.type.name === 'Текст' || error.type.name === 'Текст') && (
         <Box className={classes.selects}>
           <ResultSelect
             error={errorStatusesRequestError?.message}
