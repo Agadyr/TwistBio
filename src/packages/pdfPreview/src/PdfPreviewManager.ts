@@ -1,3 +1,4 @@
+import { alpha } from '@mui/material'
 import * as pdfjsLib from 'pdfjs-dist'
 import { PDFDocumentProxy, RenderParameters } from 'pdfjs-dist/types/src/display/api'
 
@@ -74,21 +75,31 @@ class PdfPreviewManager {
       return savedPreview
     }
     const page = await pdf.getPage(pageNum)
-    const viewport = page.getViewport({ scale: 4.0 })
-    const canvas = document.createElement('canvas')
+    const scale = 5.0
+    const viewport = page.getViewport({ scale })
 
+    const canvas = document.createElement('canvas')
     canvas.width = viewport.width
     canvas.height = viewport.height
+    const context = canvas.getContext('2d', { alpha: false })
+    if (!context) {
+      throw new Error('Failed to get 2D context')
+    }
+
+    context.imageSmoothingEnabled = true
+    context.imageSmoothingQuality = 'high'
+
     const renderContext = {
-      canvasContext: canvas.getContext('2d'),
+      canvasContext: context,
       viewport,
     }
 
     await page.render(renderContext as RenderParameters).promise
-    const preview = canvas.toDataURL()
+    const preview = canvas.toDataURL('image/png')
+
     filePages[pageNum] = preview
     this.previews[fileUrl] = filePages
-    return canvas.toDataURL()
+    return preview
   }
 }
 
