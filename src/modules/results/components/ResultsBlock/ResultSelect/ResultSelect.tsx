@@ -19,7 +19,6 @@ export const ResultSelect: FC<ResultSelectProps> = ({ name, label, error, select
       {errorName}
       <Controller
         control={control}
-        defaultValue={label || ''}
         name={name}
         render={({ field: { onChange, value = '' } }) => (
           <FormControl error={!!error} variant="filled">

@@ -150,9 +150,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     samplePage?.previewMlCroppedFullUrl,
     canvasRef.current,
   ])
-
   console.log(error)
-
   return (
     <Box className={classes.images}>
       <canvas ref={canvasRef} style={{ display: 'none' }} />
