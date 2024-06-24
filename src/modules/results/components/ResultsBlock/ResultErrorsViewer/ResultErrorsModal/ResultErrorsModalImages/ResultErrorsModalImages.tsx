@@ -15,6 +15,39 @@ interface ResultErrorsModalProps {
   error: any
 }
 
+const ImageSection: FC<{ title: string; src?: string }> = ({ title, src }) => (
+  <Box>
+    <Typography>{title}</Typography>
+    <Box className={classes.imgWrap}>{src && <img alt={title} className={classes.img} src={src} />}</Box>
+  </Box>
+)
+
+const TextErrorSection: FC<{ content: string[]; bestMatch?: string[] }> = ({ content, bestMatch }) => (
+  <Box className={classes.imgx2}>
+    {content.map((text, index) => (
+      <Box key={index}>
+        <Typography variant="h5">
+          {index + 1}) {text}
+        </Typography>
+        {bestMatch && bestMatch[index] ? (
+          bestMatch[index] === text ? (
+            <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
+          ) : (
+            <div>
+              <Typography variant="h6">Правильно:</Typography>
+              <Typography style={{ color: 'red' }} variant="h6">
+                {bestMatch[index]}
+              </Typography>
+            </div>
+          )
+        ) : (
+          <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
+        )}
+      </Box>
+    ))}
+  </Box>
+)
+
 export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) => {
   const { comparisonId: stringId } = useParams({ from: '/_comparison/$comparisonId/results' })
   const comparisonId = Number(stringId)
@@ -30,6 +63,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
   const [croppedMaskImgSrc, setCroppedMaskSrc] = useState<string>()
   const { comparison } = useComparison(Number(comparisonId))
   const canvasRef = useRef<HTMLCanvasElement>(null)
+
   const loadAndCropImage = (imgSrc: string, cropRatio: number[], setCroppedImgSrc: (src: string) => void) => {
     if (cropRatio && cropRatio.length === 4) {
       const image = new Image()
@@ -117,115 +151,61 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     canvasRef.current,
   ])
 
+  console.log(error)
+
   return (
     <Box className={classes.images}>
       <canvas ref={canvasRef} style={{ display: 'none' }} />
+
       {error.type.name !== 'Баркод' &&
         error.type.name !== 'Штрихкод' &&
         comparison?.stage.comparisonType !== 'текстовое сравнение' && (
           <>
-            <Box>
-              <Typography>Эталон</Typography>
-              <Box className={classes.imgWrap}>
-                {croppedReferenceImgSrc && (
-                  <img alt="Cropped Reference" className={classes.img} src={croppedReferenceImgSrc} />
-                )}
-              </Box>
-            </Box>
-            <Box>
-              <Typography>Образец</Typography>
-              <Box className={classes.imgWrap}>
-                {sampleImgSrc && (
-                  <>
-                    {croppedSampleImgSrc && (
-                      <img alt="Cropped Sample" className={classes.img} src={croppedSampleImgSrc} />
-                    )}
-                  </>
-                )}
-              </Box>
-            </Box>
-            <Box>
-              <Typography>Маска</Typography>
-              <Box className={classes.imgWrap}>
-                {croppedMaskImgSrc && <img alt="Cropped Reference" className={classes.img} src={croppedMaskImgSrc} />}
-              </Box>
-            </Box>
+            <ImageSection src={croppedReferenceImgSrc} title="Эталон" />
+            <ImageSection src={croppedSampleImgSrc} title="Образец" />
+            <ImageSection src={croppedMaskImgSrc} title="Маска" />
           </>
         )}
+
       {(error.type.name === 'Баркод' || error.type.name === 'Штрихкод') &&
         comparison?.stage.comparisonType !== 'текстовое сравнение' && (
-          <>
-            <Box>
-              <Box className={classes.imgWrap}>
-                <img alt="Cropped Reference" className={classes.img} src={error.imageFullUrl} />
-              </Box>
-            </Box>
-          </>
+          <ImageSection src={error.imageFullUrl} title="Баркод/Штрихкод" />
         )}
+
       {error.type.name === 'Опечатка' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
-          <Box>
-            <Box className={classes.imgx2}>
-              <Typography variant="h5">1) {error.content[0]}</Typography>
-              {error.bestMatch[0] === error.content[0] ? (
-                <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
-              ) : (
-                <div>
-                  <Typography variant="h6">Правильно:</Typography>
-                  <Typography style={{ color: 'red' }} variant="h6">
-                    {error.bestMatch[0]}
-                  </Typography>
-                </div>
-              )}
-
-              <Typography variant="h5"> 2) {error.content[1]} </Typography>
-              {error.bestMatch[1] === error.content[1] ? (
-                <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
-              ) : (
-                <div>
-                  <Typography variant="h6">Правильно:</Typography>
-                  <Typography style={{ color: 'red' }} variant="h6">
-                    {error.bestMatch[1]}
-                  </Typography>
-                </div>
-              )}
-            </Box>
-          </Box>
+          <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
           <Box className={classes.imgWrap}>
             {croppedSampleImgSrc && <img alt="Cropped Reference" className={classes.img} src={croppedSampleImgSrc} />}
           </Box>
         </>
       )}
+
       {error.type.name === 'Нет в эталоне' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
-          <Box>
-            <Typography>Эталон</Typography>
-            <Box className={classes.imgx}>
-              <img alt="Cropped Reference" className={classes.img} src="/chest.png" />
-            </Box>
-          </Box>
+          <ImageSection src="/chest.png" title="Эталон" />
           <Box>
             <Typography>Образец</Typography>
-            <Box className={classes.imgx}>
-              <img alt="Cropped Reference" className={classes.img} src={croppedSampleImgSrc} />
-            </Box>
+            {!error.content ? (
+              <ImageSection src={croppedSampleImgSrc} title="Образец" />
+            ) : (
+              <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
+            )}
           </Box>
         </>
       )}
+
       {error.type.name === 'Нет в образце' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
           <Box>
             <Typography>Эталон</Typography>
-            <Box className={classes.imgx}>
-              <img alt="Cropped Reference" className={classes.img} src={croppedReferenceImgSrc} />
-            </Box>
+            {!error.content ? (
+              <ImageSection src={croppedReferenceImgSrc} title="Эталон" />
+            ) : (
+              <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
+            )}
           </Box>
-          <Box>
-            <Typography>Образец</Typography>
-            <Box className={classes.imgx}>
-              <img alt="Cropped Reference" className={classes.img} src="/chest.png" />
-            </Box>
-          </Box>
+          <ImageSection src="/chest.png" title="Образец" />
         </>
       )}
     </Box>
