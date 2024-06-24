@@ -16,9 +16,10 @@ interface ResultErrorsModalProps {
   openModal: boolean
   setOpenModal: Dispatch<SetStateAction<boolean>>
   error: any
+  onChangeError: any
 }
 
-export const ResultErrorsModal: FC<ResultErrorsModalProps> = ({ openModal, setOpenModal, error }) => {
+export const ResultErrorsModal: FC<ResultErrorsModalProps> = ({ openModal, setOpenModal, error, onChangeError }) => {
   const methods = useInitForm<any>({})
 
   const { handleSubmit } = methods
@@ -33,7 +34,7 @@ export const ResultErrorsModal: FC<ResultErrorsModalProps> = ({ openModal, setOp
           <form onSubmit={handleSubmit(onSubmit, onError)}>
             <ResultErrorsModalImages error={error} />
             <ResultErrorsModalFields error={error} />
-            <ResultErrorsModalButtons />
+            <ResultErrorsModalButtons onChangeError={onChangeError} />
           </form>
         </FormProvider>
       </Box>

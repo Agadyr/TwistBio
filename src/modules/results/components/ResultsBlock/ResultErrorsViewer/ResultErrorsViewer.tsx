@@ -13,7 +13,8 @@ import classes from './ResultErrorsViewer.module.scss'
 export const ResultErrorsViewer = () => {
   const itemRefs = useRef<Record<number, HTMLDivElement>>({})
   const [openModal, setOpenModal] = useState(false)
-  const [error, setError] = useState({})
+  const [error, setError] = useState<any>({})
+  const [errorId, setErrorId] = useState<number | null>(null)
   const { comparisonId } = useParams({ from: '/_comparison/$comparisonId/results' })
   const selectedPair = useResultErrors((state) => state.selectedPair)
   const { pairErrors, pairErrorsAreLoading } = usePairErrors(Number(comparisonId), selectedPair as number)
@@ -22,6 +23,7 @@ export const ResultErrorsViewer = () => {
   const { pairErrors: newErrors } = usefilterPairErrors((state) => ({
     pairErrors: state.pairErrors,
   }))
+
   useEffect(() => {
     if (selectedError) {
       itemRefs.current[selectedError]?.scrollIntoView({ block: 'center', behavior: 'smooth' })
@@ -35,20 +37,36 @@ export const ResultErrorsViewer = () => {
       </Box>
     )
   }
+
   if (!pairErrors || !pairErrors.errors.length) {
     return 'Нет ошибок'
   }
+
   const errorList = newErrors?.errors ? newErrors : pairErrors
+
+  const onChangeError = (errorChangeValue: string) => {
+    if (errorChangeValue === 'previous' && errorId !== null && errorId > 0) {
+      const newError = errorList.errors[errorId - 1]
+      setError(newError)
+      setErrorId(errorId - 1)
+    } else if (errorChangeValue === 'next' && errorId !== null && errorId < errorList.errors.length - 1) {
+      const newError = errorList.errors[errorId + 1]
+      setError(newError)
+      setErrorId(errorId + 1)
+    }
+  }
+
   return (
     <>
       <Box className={classes.errors}>
-        {errorList?.errors.map((pairError: any) => (
+        {errorList?.errors.map((pairError: any, index: number) => (
           <Box
             className={cx(classes.item, { [classes.active]: pairError.id === selectedError })}
             key={pairError.id}
             onClick={() => {
               setError(pairError)
               setOpenModal(true)
+              setErrorId(index)
             }}
             onMouseEnter={() => setHoveredError(pairError.id)}
             onMouseLeave={() => setHoveredError(0)}
@@ -61,7 +79,12 @@ export const ResultErrorsViewer = () => {
           </Box>
         ))}
       </Box>
-      <ResultErrorsModal error={error} openModal={openModal} setOpenModal={setOpenModal} />
+      <ResultErrorsModal
+        error={error}
+        onChangeError={onChangeError}
+        openModal={openModal}
+        setOpenModal={setOpenModal}
+      />
     </>
   )
 }

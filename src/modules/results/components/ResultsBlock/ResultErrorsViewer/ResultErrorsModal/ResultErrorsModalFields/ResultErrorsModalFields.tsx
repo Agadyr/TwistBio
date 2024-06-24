@@ -84,7 +84,7 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
               errorName="Тип"
               label={error.type ? error.type.name : 'Тип'}
               name="select2"
-              selectOptions={errorsType}
+              selectOptions={errorsTypeText}
             />
             <ResultSelect
               error={errorSeveritiesRequestError?.message}

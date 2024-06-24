@@ -41,7 +41,7 @@ const TextErrorSection: FC<{ content: string[]; bestMatch?: string[] }> = ({ con
             </div>
           )
         ) : (
-          <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
+          <Typography style={{ color: 'red' }}>Не найдено</Typography>
         )}
       </Box>
     ))}
@@ -129,7 +129,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
 
     const cropRatio = error.sampleCropRatio || error.referenceCropRatio
     loadAndCropImage(sampleImgSrc, cropRatio, setCroppedSampleImgSrc)
-  }, [sampleImgSrc, canvasRef.current])
+  }, [sampleImgSrc, canvasRef.current, error])
 
   useEffect(() => {
     if (!referenceImgSrc || !canvasRef.current) {
@@ -138,7 +138,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
 
     const cropRatio = error.sampleCropRatio || error.referenceCropRatio
     loadAndCropImage(referenceImgSrc, cropRatio, setCroppedReferenceImgSrc)
-  }, [referenceImgSrc, canvasRef.current])
+  }, [referenceImgSrc, canvasRef.current, error])
 
   useEffect(() => {
     if (pairErrors && pairErrors?.maskFullUrl && canvasRef.current) {
@@ -149,8 +149,8 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     referencePage?.previewMlCroppedFullUrl,
     samplePage?.previewMlCroppedFullUrl,
     canvasRef.current,
+    error,
   ])
-  console.log(error)
   return (
     <Box className={classes.images}>
       <canvas ref={canvasRef} style={{ display: 'none' }} />

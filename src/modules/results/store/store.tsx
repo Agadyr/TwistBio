@@ -3,7 +3,7 @@ import camelcaseKeys from 'camelcase-keys'
 import { create } from 'zustand'
 
 interface ErrorStore {
-  pairErrors: any[]
+  pairErrors: any
   fetchErrors: (comparisonId: any, pairId: any, data: any) => Promise<void>
 }
 
