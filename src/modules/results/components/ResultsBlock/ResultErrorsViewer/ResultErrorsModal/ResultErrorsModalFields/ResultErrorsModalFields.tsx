@@ -71,7 +71,7 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
         error.type.name === 'Нет в эталоне' ||
         error.type.name === 'Нет в образце') && (
         <>
-          <Box className={classes.selects2}>
+          <Box className={classes.selects}>
             <ResultSelect
               error={errorStatusesRequestError?.message}
               errorName="Статус"
@@ -84,12 +84,16 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
               errorName="Тип"
               label={error.type ? error.type.name : 'Тип'}
               name="select2"
-              selectOptions={errorsTypeText}
+              selectOptions={errorsType}
+            />
+            <ResultSelect
+              error={errorSeveritiesRequestError?.message}
+              errorName="Критичность"
+              label={error.severity ? error.severity.name : 'Критичность'}
+              name="select3"
+              selectOptions={errorsSever}
             />
           </Box>
-          <Typography style={{ marginBottom: '20px' }} variant="h6">
-            Распознано: {error.detectedValue}
-          </Typography>
         </>
       )}
       <ResultTextField error={undefined} label="Комментарий" name="comment" />
