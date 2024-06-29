@@ -172,13 +172,11 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
 
       {error.type.name === 'Опечатка' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
-          <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
           <Box>
-            <Typography>Образец</Typography>
-            <Box className={classes.imgWrap}>
-              {croppedSampleImgSrc && <img alt="Cropped Reference" className={classes.img} src={croppedSampleImgSrc} />}
-            </Box>
+            <Typography>Эталон</Typography>
+            <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
           </Box>
+          <Box> {croppedSampleImgSrc && <ImageSection src={croppedSampleImgSrc} title="Образец" />} </Box>
         </>
       )}
 

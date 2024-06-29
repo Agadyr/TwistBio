@@ -120,7 +120,7 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
             </Box>
           </>
         )}
-        <ResultTextField error={undefined} label="Комментарий" name="comment" />
+        <ResultTextField error={undefined} label="текст текст текст текст текст" name="comment" />
       </Box>
     </FormProvider>
   )
