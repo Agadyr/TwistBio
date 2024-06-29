@@ -26,7 +26,6 @@ export const SetupPagesViewer: FC<SetupPagesViewerProps> = ({ accept, filesPages
   const removePage = useSelectedPages((state) => state.removePage)
   const restorePage = useSelectedPages((state) => state.restorePage)
   const removedPages = useSelectedPages((state) => state.removedPages[areaType])
-  console.log(removedPages)
   const onPageClick = (page: number, isRemovedPage: boolean) => {
     if (isRemovedPage) {
       return

@@ -28,8 +28,8 @@ export const ResultErrorsModal: FC<ResultErrorsModalProps> = ({ openModal, setOp
   return (
     <Modal onClose={() => setOpenModal(false)} open={openModal}>
       <Box className={classes.modal}>
-        <FontAwesomeIcon className={classes.faClose} icon={faClose} onClick={() => setOpenModal(false)} />
         <Typography variant="h5">№{error.number}</Typography>
+        <FontAwesomeIcon className={classes.faClose} icon={faClose} onClick={() => setOpenModal(false)} />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit, onError)}>
             <ResultErrorsModalImages error={error} />

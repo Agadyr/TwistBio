@@ -24,7 +24,7 @@ export const ResultsBlock = () => {
   const selectedPair = useResultErrors((state) => state.selectedPair)
   const { pairErrors, pairErrorsAreLoading } = usePairErrors(Number(comparisonId), selectedPair as number)
   const isTextComparison = comparison?.stage.comparisonType === TypeofComparison.Text
-  const header = isTextComparison ? 'Анализ результатов текстового сравнения' : commonHeaders[ComparisonStep.Results]
+  const header = isTextComparison ? 'Анализ результатов потекстового сравнения' : commonHeaders[ComparisonStep.Results]
   useHeader(ComparisonStep.Results, header)
   const [openModal, setOpenModal] = useState(false)
   const [openModalCard, setOpenModalCard] = useState(false)

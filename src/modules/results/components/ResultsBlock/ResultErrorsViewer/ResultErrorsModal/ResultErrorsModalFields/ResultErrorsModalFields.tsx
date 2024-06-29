@@ -1,4 +1,5 @@
-import { FC } from 'react'
+import { FC, useEffect, useState } from 'react'
+import { FormProvider, useForm } from 'react-hook-form'
 
 import { Box, Typography } from '@mui/material'
 import { ResultSelect } from 'modules/results/components/ResultsBlock/ResultSelect'
@@ -13,90 +14,114 @@ import classes from './ResultErrorsModalFields.module.scss'
 interface ResultErrorsModalProps {
   error: any
 }
+
 export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) => {
+  const methods = useForm({ defaultValues: { error } })
+
+  const [currentError, setCurrentError] = useState(error)
+  const [errorSeverities, setErrorSeverities] = useState(errorsSever)
+  const [errorStatuses, setErrorStatuses] = useState(errorsStatus)
+  const [errorTypes, setErrorTypes] = useState(errorsType)
+  const [errorTypesText, setErrorTypesText] = useState(errorsTypeText)
+
   const { errorSeveritiesRequestError } = useComparisonErrorSeverities()
   const { errorStatusesRequestError } = useComparisonErrorStatuses()
   const { errorTypesRequestError } = useComparisonErrorTypes()
+
+  useEffect(() => {
+    setCurrentError(error)
+    methods.reset({ error })
+  }, [error, methods])
+
+  useEffect(() => {
+    setErrorSeverities(errorsSever)
+    setErrorStatuses(errorsStatus)
+    setErrorTypes(errorsType)
+    setErrorTypesText(errorsTypeText)
+  }, [])
+
   return (
-    <Box className={classes.fields}>
-      {(error.type.name === 'Объект' || error.type.name === 'Текст' || error.type.name === 'Текст') && (
-        <Box className={classes.selects}>
-          <ResultSelect
-            error={errorStatusesRequestError?.message}
-            errorName="Статус"
-            label={error.status ? error.status.name : 'Статус'}
-            name="select1"
-            selectOptions={errorsStatus}
-          />
-          <ResultSelect
-            error={errorTypesRequestError?.message}
-            errorName="Тип"
-            label={error.type ? error.type.name : 'Тип'}
-            name="select2"
-            selectOptions={errorsType}
-          />
-          <ResultSelect
-            error={errorSeveritiesRequestError?.message}
-            errorName="Критичность"
-            label={error.severity ? error.severity.name : 'Критичность'}
-            name="select3"
-            selectOptions={errorsSever}
-          />
-        </Box>
-      )}
-      {(error.type.name === 'Баркод' || error.type.name === 'Штрихкод') && (
-        <>
-          <Box className={classes.selects2}>
-            <ResultSelect
-              error={errorStatusesRequestError?.message}
-              errorName="Статус"
-              label={error.status ? error.status.name : 'Статус'}
-              name="select1"
-              selectOptions={errorsStatus}
-            />
-            <ResultSelect
-              error={errorTypesRequestError?.message}
-              errorName="Тип"
-              label={error.type ? error.type.name : 'Тип'}
-              name="select2"
-              selectOptions={errorsType}
-            />
-          </Box>
-          <Typography style={{ marginBottom: '20px' }} variant="h6">
-            Распознано: {error.detectedValue}
-          </Typography>
-        </>
-      )}
-      {(error.type.name === 'Опечатка' ||
-        error.type.name === 'Нет в эталоне' ||
-        error.type.name === 'Нет в образце') && (
-        <>
+    <FormProvider {...methods}>
+      <Box className={classes.fields}>
+        {(currentError.type.name === 'Объект' || currentError.type.name === 'Текст') && (
           <Box className={classes.selects}>
             <ResultSelect
               error={errorStatusesRequestError?.message}
               errorName="Статус"
-              label={error.status ? error.status.name : 'Статус'}
+              label={currentError.status ? currentError.status.name : 'Статус'}
               name="select1"
-              selectOptions={errorsStatus}
+              selectOptions={errorStatuses}
             />
             <ResultSelect
               error={errorTypesRequestError?.message}
               errorName="Тип"
-              label={error.type ? error.type.name : 'Тип'}
+              label={currentError.type ? currentError.type.name : 'Тип'}
               name="select2"
-              selectOptions={errorsTypeText}
+              selectOptions={errorTypes}
             />
             <ResultSelect
               error={errorSeveritiesRequestError?.message}
               errorName="Критичность"
-              label={error.severity ? error.severity.name : 'Критичность'}
+              label={currentError.severity ? currentError.severity.name : 'Критичность'}
               name="select3"
-              selectOptions={errorsSever}
+              selectOptions={errorSeverities}
             />
           </Box>
-        </>
-      )}
-      <ResultTextField error={undefined} label="Комментарий" name="comment" />
-    </Box>
+        )}
+        {(currentError.type.name === 'Баркод' || currentError.type.name === 'Штрихкод') && (
+          <>
+            <Box className={classes.selects2}>
+              <ResultSelect
+                error={errorStatusesRequestError?.message}
+                errorName="Статус"
+                label={currentError.status ? currentError.status.name : 'Статус'}
+                name="select1"
+                selectOptions={errorStatuses}
+              />
+              <ResultSelect
+                error={errorTypesRequestError?.message}
+                errorName="Тип"
+                label={currentError.type ? currentError.type.name : 'Тип'}
+                name="select2"
+                selectOptions={errorTypes}
+              />
+            </Box>
+            <Typography style={{ marginBottom: '20px' }} variant="h6">
+              Распознано: {currentError.detectedValue}
+            </Typography>
+          </>
+        )}
+        {(currentError.type.name === 'Опечатка' ||
+          currentError.type.name === 'Нет в эталоне' ||
+          currentError.type.name === 'Нет в образце') && (
+          <>
+            <Box className={classes.selects}>
+              <ResultSelect
+                error={errorStatusesRequestError?.message}
+                errorName="Статус"
+                label={currentError.status ? currentError.status.name : 'Статус'}
+                name="select1"
+                selectOptions={errorStatuses}
+              />
+              <ResultSelect
+                error={errorTypesRequestError?.message}
+                errorName="Тип"
+                label={currentError.type ? currentError.type.name : 'Тип'}
+                name="select2"
+                selectOptions={errorTypesText}
+              />
+              <ResultSelect
+                error={errorSeveritiesRequestError?.message}
+                errorName="Критичность"
+                label={currentError.severity ? currentError.severity.name : 'Критичность'}
+                name="select3"
+                selectOptions={errorSeverities}
+              />
+            </Box>
+          </>
+        )}
+        <ResultTextField error={undefined} label="Комментарий" name="comment" />
+      </Box>
+    </FormProvider>
   )
 }

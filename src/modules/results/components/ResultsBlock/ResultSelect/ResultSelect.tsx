@@ -1,5 +1,5 @@
-import { FC, ReactNode } from 'react'
-import { Controller, useFormContext } from 'react-hook-form'
+import { FC, ReactNode, useEffect } from 'react'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
 
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
 import { ComparisonError } from 'modules/results/api'
@@ -13,10 +13,17 @@ interface ResultSelectProps {
 }
 
 export const ResultSelect: FC<ResultSelectProps> = ({ name, label, error, selectOptions = [], errorName }) => {
-  const { control } = useFormContext()
+  const { control, setValue } = useFormContext()
+
+  const currentError = useWatch({ control, name: 'error' })
+
+  useEffect(() => {
+    setValue(name, '')
+  }, [currentError, setValue, name])
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-      {errorName}
+      {errorName === 'Статус' ? '' : errorName}
       <Controller
         control={control}
         name={name}
@@ -24,7 +31,7 @@ export const ResultSelect: FC<ResultSelectProps> = ({ name, label, error, select
           <FormControl error={!!error} variant="filled">
             <InputLabel>{label}</InputLabel>
             <Select
-              disabled={label === 'Штрихкод' ? true : false}
+              disabled={label === 'Штрихкод'}
               onChange={(event) => onChange(event.target.value)}
               sx={{ width: 240 }}
               value={value}
