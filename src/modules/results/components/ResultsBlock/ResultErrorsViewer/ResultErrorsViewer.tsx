@@ -26,7 +26,8 @@ export const ResultErrorsViewer = () => {
 
   useEffect(() => {
     if (selectedError) {
-      itemRefs.current[selectedError]?.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      console.log(selectedError, 'selectedError')
+      itemRefs.current[selectedError].scrollIntoView({ block: 'center', behavior: 'smooth' })
     }
   }, [selectedError])
 
@@ -42,7 +43,7 @@ export const ResultErrorsViewer = () => {
     return 'Нет ошибок'
   }
 
-  const errorList = newErrors?.errors ? newErrors : pairErrors
+  const errorList = newErrors?.errors ? newErrors?.errors : pairErrors?.errors
 
   const onChangeError = (errorChangeValue: string) => {
     if (errorChangeValue === 'previous' && errorId !== null && errorId > 0) {
@@ -59,7 +60,7 @@ export const ResultErrorsViewer = () => {
   return (
     <>
       <Box className={classes.errors}>
-        {errorList?.errors.map((pairError: any, index: number) => (
+        {errorList.map((pairError: any, index: number) => (
           <Box
             className={cx(classes.item, { [classes.active]: pairError.id === selectedError })}
             key={pairError.id}

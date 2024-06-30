@@ -20,7 +20,7 @@ export const ResultErrorFrames: FC<Props> = ({ imageRef, fontSize }) => {
   const { selectedError, setSelectedError, clearErrorSelection, selectedPair, hoveredError } = useResultErrors()
   const { pairErrors } = usePairErrors(Number(comparisonId), selectedPair as number)
   const [style, setStyle] = useState({})
-  const ref = useRef(null)
+  const ref = useRef<HTMLDivElement>(null)
   useClickAway(clearErrorSelection, [ref])
   const update = () => {
     const rect = imageRef.current?.getBoundingClientRect()

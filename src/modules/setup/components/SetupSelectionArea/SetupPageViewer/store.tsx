@@ -18,7 +18,7 @@ export const getPackage = create<PackageState>((set) => ({
     form.append('file', file)
     try {
       const res: AxiosResponse<PackageState> = await axios.post(
-        `http://api.statanly.com:9135/get-package?stage=${stage}`,
+        `${import.meta.env.VITE_API_URL2}/get-package?stage=${stage}`,
         form,
       )
       console.log(isReference)

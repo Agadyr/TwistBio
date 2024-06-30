@@ -12,7 +12,7 @@ export const usefilterPairErrors = create<ErrorStore>((set) => ({
   fetchErrors: async (comparisonId: any, pairId: any, data: any) => {
     try {
       const res: AxiosResponse<any> = await axios.get(
-        `http://api.statanly.com:9134/comparisons/${comparisonId}/pairs/${pairId}/errors`,
+        `${import.meta.env.VITE_API_URL}/comparisons/${comparisonId}/pairs/${pairId}/errors`,
         {
           params: {
             typeId: data.type_id__in,
