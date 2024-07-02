@@ -68,7 +68,10 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
             />
           </Box>
         )}
-        {(currentError.type.name === 'Баркод' || currentError.type.name === 'Штрихкод') && (
+        {(currentError.type.name === 'Баркод' ||
+          currentError.type.name === 'Штрихкод' ||
+          currentError.type.name === 'Штрихкод (значение)' ||
+          currentError.type.name === 'Баркод (значение)') && (
           <>
             <Box className={classes.selects2}>
               <ResultSelect
@@ -120,7 +123,7 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
             </Box>
           </>
         )}
-        <ResultTextField error={undefined} label="текст текст текст текст текст" name="comment" />
+        <ResultTextField error={undefined} label="Готово" name="comment" />
       </Box>
     </FormProvider>
   )

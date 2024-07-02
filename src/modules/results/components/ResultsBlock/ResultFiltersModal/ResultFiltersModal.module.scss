@@ -14,7 +14,7 @@
 
 .center {
   display: flex;
-  gap: 80px;
+  justify-content: space-between;
   margin-bottom: 80px;
 }
 
@@ -26,6 +26,7 @@
 .checkboxes {
   display: flex;
   flex-direction: column;
+  width: 100%;
 }
 
 .bottom {

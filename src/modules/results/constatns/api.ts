@@ -11,6 +11,8 @@ export const errorsType: ComparisonError[] = [
   { name: 'Текст', code: 'code5', id: 2 },
   { name: 'Баркод', code: 'code6', id: 3 },
   { name: 'Штрих код', code: 'code7', id: 4 },
+  { name: 'Баркод (значение)', code: 'code8', id: 4 },
+  { name: 'Штрих код (значение)', code: 'code9', id: 4 },
 ]
 export const errorsTypeText: ComparisonError[] = [
   { name: 'Опечатка', code: 'code4', id: 1 },
@@ -18,10 +20,10 @@ export const errorsTypeText: ComparisonError[] = [
   { name: 'Нет в образце', code: 'code6', id: 3 },
 ]
 export const errorsSever: ComparisonError[] = [
-  { name: 'Высокая', code: 'code8', id: 1 },
-  { name: 'Средняя', code: 'code9', id: 2 },
-  { name: 'Низкая', code: 'code10', id: 3 },
-  { name: 'Не заполнено', code: 'code11', id: 4 },
+  { name: 'Высокая', code: 'code10', id: 1 },
+  { name: 'Средняя', code: 'code11', id: 2 },
+  { name: 'Низкая', code: 'code12', id: 3 },
+  { name: 'Не заполнено', code: 'code13', id: 4 },
 ]
 
 export const pairErrors: ComparisonPairErrors = {

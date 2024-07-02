@@ -1,4 +1,4 @@
-import { FC, ReactNode, useEffect } from 'react'
+import { FC, ReactNode, useEffect, useState } from 'react'
 import { Controller, useFormContext, useWatch } from 'react-hook-form'
 
 import { FormControl, FormHelperText, InputLabel, MenuItem, Select } from '@mui/material'
@@ -14,13 +14,24 @@ interface ResultSelectProps {
 
 export const ResultSelect: FC<ResultSelectProps> = ({ name, label, error, selectOptions = [], errorName }) => {
   const { control, setValue } = useFormContext()
+  const [labelState, setlabelState] = useState<boolean | null>(false)
 
   const currentError = useWatch({ control, name: 'error' })
 
   useEffect(() => {
     setValue(name, '')
   }, [currentError, setValue, name])
-
+  useEffect(() => {
+    if (label === 'Баркод') {
+      setlabelState(true)
+    } else if (label === 'Штрихкод') {
+      setlabelState(true)
+    } else if (label === 'Штрихкод (значение)') {
+      setlabelState(true)
+    } else if (label === 'Баркод (значение)') {
+      setlabelState(true)
+    }
+  }, [label, error])
   return (
     <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
       {errorName === 'Статус' ? '' : errorName}
@@ -31,7 +42,7 @@ export const ResultSelect: FC<ResultSelectProps> = ({ name, label, error, select
           <FormControl error={!!error} variant="filled">
             <InputLabel>{label}</InputLabel>
             <Select
-              disabled={label === 'Штрихкод'}
+              disabled={labelState ? true : false}
               onChange={(event) => onChange(event.target.value)}
               sx={{ width: 240 }}
               value={value}

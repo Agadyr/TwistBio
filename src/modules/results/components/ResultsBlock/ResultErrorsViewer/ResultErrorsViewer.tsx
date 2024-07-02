@@ -47,11 +47,11 @@ export const ResultErrorsViewer = () => {
 
   const onChangeError = (errorChangeValue: string) => {
     if (errorChangeValue === 'previous' && errorId !== null && errorId > 0) {
-      const newError = errorList.errors[errorId - 1]
+      const newError = errorList[errorId - 1]
       setError(newError)
       setErrorId(errorId - 1)
-    } else if (errorChangeValue === 'next' && errorId !== null && errorId < errorList.errors.length - 1) {
-      const newError = errorList.errors[errorId + 1]
+    } else if (errorChangeValue === 'next' && errorId !== null && errorId < errorList.length - 1) {
+      const newError = errorList[errorId + 1]
       setError(newError)
       setErrorId(errorId + 1)
     }

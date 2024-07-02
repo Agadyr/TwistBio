@@ -50,6 +50,8 @@ export const ResultFiltersModal: FC<ResultFiltersProps> = ({ openModal, setOpenM
       9: true,
       10: false,
       11: true,
+      12: false,
+      13: true,
     },
   })
 
@@ -71,6 +73,8 @@ export const ResultFiltersModal: FC<ResultFiltersProps> = ({ openModal, setOpenM
         9: true,
         10: true,
         11: true,
+        12: true,
+        13: true,
       })
     } else {
       reset({
@@ -85,6 +89,8 @@ export const ResultFiltersModal: FC<ResultFiltersProps> = ({ openModal, setOpenM
         9: false,
         10: false,
         11: false,
+        12: false,
+        13: false,
       })
     }
   }, [selectAllFilters])
@@ -100,22 +106,22 @@ export const ResultFiltersModal: FC<ResultFiltersProps> = ({ openModal, setOpenM
       }
     }
     const typeIdInArray = Object.keys(obj)
-      .filter((key) => Number(key) <= 7 && obj[key] === true)
+      .filter((key) => Number(key) <= 9 && obj[key] === true)
       .join(',')
     const severityIdInInArray = Object.keys(obj)
-      .filter((key) => Number(key) > 7 && obj[key] === true)
+      .filter((key) => Number(key) > 9 && obj[key] === true)
       .map((key) => {
         const numKey = Number(key)
-        if (numKey === 8) {
+        if (numKey === 10) {
           return 1
         }
-        if (numKey === 9) {
+        if (numKey === 11) {
           return 2
         }
-        if (numKey === 10) {
+        if (numKey === 12) {
           return 3
         }
-        if (numKey === 11) {
+        if (numKey === 13) {
           return ''
         }
         return numKey
@@ -149,8 +155,10 @@ export const ResultFiltersModal: FC<ResultFiltersProps> = ({ openModal, setOpenM
                   <Box className={classes.checkboxes}>
                     <ResultCheckboxField label="Объект" name="4" />
                     <ResultCheckboxField label="Текст" name="5" />
-                    <ResultCheckboxField label="Баркод" name="6" />
-                    <ResultCheckboxField label="Штрих-код" name="7" />
+                    <ResultCheckboxField label="Баркод" name="8" />
+                    <ResultCheckboxField label="Штрих-код" name="9" />
+                    <ResultCheckboxField label="Баркод (значение)" name="6" />
+                    <ResultCheckboxField label="Штрих-код (значение)" name="7" />
                   </Box>
                 )}
                 {comparison?.stage.comparisonType !== 'попиксельное сравнение' && (
@@ -165,10 +173,10 @@ export const ResultFiltersModal: FC<ResultFiltersProps> = ({ openModal, setOpenM
               <Box className={classes.wrap}>
                 <Typography paddingTop="9px">Критичность</Typography>
                 <Box className={classes.checkboxes}>
-                  <ResultCheckboxField label="Высокая" name="8" />
-                  <ResultCheckboxField label="Средняя" name="9" />
-                  <ResultCheckboxField label="Низкая" name="10" />
-                  <ResultCheckboxField label="Не заполнено" name="11" />
+                  <ResultCheckboxField label="Высокая" name="10" />
+                  <ResultCheckboxField label="Средняя" name="11" />
+                  <ResultCheckboxField label="Низкая" name="12" />
+                  <ResultCheckboxField label="Не заполнено" name="13" />
                 </Box>
               </Box>
             </Box>

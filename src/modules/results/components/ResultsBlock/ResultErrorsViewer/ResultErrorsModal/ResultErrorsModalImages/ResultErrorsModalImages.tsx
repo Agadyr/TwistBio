@@ -61,9 +61,12 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
   const [croppedSampleImgSrc, setCroppedSampleImgSrc] = useState<string>()
   const [croppedReferenceImgSrc, setCroppedReferenceImgSrc] = useState<string>()
   const [croppedMaskImgSrc, setCroppedMaskSrc] = useState<string>()
+  const [croppedImageCropRatio, setCroppedImageCropRatio] = useState<string>()
+  const [croppedBarcodeCropRatio, setCroppedBarcodeCropRatio] = useState<string>()
   const { comparison } = useComparison(Number(comparisonId))
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
+  console.log(error)
   const loadAndCropImage = (imgSrc: string, cropRatio: number[], setCroppedImgSrc: (src: string) => void) => {
     if (cropRatio && cropRatio.length === 4) {
       const image = new Image()
@@ -139,6 +142,16 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     const cropRatio = error.sampleCropRatio || error.referenceCropRatio
     loadAndCropImage(referenceImgSrc, cropRatio, setCroppedReferenceImgSrc)
   }, [referenceImgSrc, canvasRef.current, error])
+  useEffect(() => {
+    if (!sampleImgSrc || !canvasRef.current) {
+      return
+    }
+    if (error.type.name === 'Штрихкод') {
+      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedImageCropRatio)
+    } else if (error.type.name === 'Баркод') {
+      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedBarcodeCropRatio)
+    }
+  }, [sampleImgSrc, canvasRef.current, error])
 
   useEffect(() => {
     if (pairErrors && pairErrors?.maskFullUrl && canvasRef.current) {
@@ -155,8 +168,10 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     <Box className={classes.images}>
       <canvas ref={canvasRef} style={{ display: 'none' }} />
 
-      {error.type.name !== 'Баркод' &&
+      {error.type.name !== 'Баркод (значение)' &&
+        error.type.name !== 'Штрихкод (значение)' &&
         error.type.name !== 'Штрихкод' &&
+        error.type.name !== 'Баркод' &&
         comparison?.stage.comparisonType !== 'текстовое сравнение' && (
           <>
             <ImageSection src={croppedReferenceImgSrc} title="Эталон" />
@@ -165,10 +180,19 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
           </>
         )}
 
-      {(error.type.name === 'Баркод' || error.type.name === 'Штрихкод') &&
-        comparison?.stage.comparisonType !== 'текстовое сравнение' && (
-          <ImageSection src={error.imageFullUrl} title="Баркод/Штрихкод" />
-        )}
+      {error.type.name === 'Штрихкод (значение)' && comparison?.stage.comparisonType !== 'текстовое сравнение' && (
+        <ImageSection src={error.imageFullUrl} title="Штрихкод  (значение)" />
+      )}
+      {error.type.name === 'Баркод (значение)' && comparison?.stage.comparisonType !== 'текстовое сравнение' && (
+        <ImageSection src={error.imageFullUrl} title="Баркод (значение)" />
+      )}
+
+      {error.type.name === 'Штрихкод' && comparison?.stage.comparisonType !== 'текстовое сравнение' && (
+        <ImageSection src={croppedImageCropRatio} title="Штрихкод" />
+      )}
+      {error.type.name === 'Баркод' && comparison?.stage.comparisonType !== 'текстовое сравнение' && (
+        <ImageSection src={croppedBarcodeCropRatio} title="Баркод" />
+      )}
 
       {error.type.name === 'Опечатка' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
@@ -176,7 +200,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
             <Typography>Эталон</Typography>
             <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
           </Box>
-          <Box> {croppedSampleImgSrc && <ImageSection src={croppedSampleImgSrc} title="Образец" />} </Box>
+          <Box> {croppedSampleImgSrc && <ImageSection src={croppedSampleImgSrc} title="Баркод" />} </Box>
         </>
       )}
 
