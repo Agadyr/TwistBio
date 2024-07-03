@@ -51,7 +51,6 @@ export const SetupPagesPairsButtons = () => {
       excludeFooterHeader: false,
       cropRatio: samplePageFrames[page.id] || initCropRatio,
     }))
-
     recreatePagesPairs({
       comparisonId,
       payload: {
@@ -67,7 +66,7 @@ export const SetupPagesPairsButtons = () => {
     !removedPages.sample.includes(activePageIndex.sample)
 
   const havePairs = comparisonPagesPairs && comparisonPagesPairs.length > 0
-  const couldAddAll = referencePages.length !== 0 && referencePages.length === samplePages.length && !havePairs
+  const couldAddAll = referencePages.length !== 0 && !havePairs
   return (
     <Box className={classes.buttons}>
       <Button disabled={!canAddForComparison} onClick={addToComparison} variant="contained">

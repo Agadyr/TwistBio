@@ -22,11 +22,7 @@ export const ResultSelect: FC<ResultSelectProps> = ({ name, label, error, select
     setValue(name, '')
   }, [currentError, setValue, name])
   useEffect(() => {
-    if (label === 'Баркод') {
-      setlabelState(true)
-    } else if (label === 'Штрихкод') {
-      setlabelState(true)
-    } else if (label === 'Штрихкод (значение)') {
+    if (label === 'Штрихкод (значение)') {
       setlabelState(true)
     } else if (label === 'Баркод (значение)') {
       setlabelState(true)

@@ -20,6 +20,7 @@ export const SetupPagesPairs = () => {
   const removeFromComparison = (pageId: number) => {
     deletePair({ comparisonId, pageId })
   }
+  console.log(comparisonPagesPairs)
   return (
     <>
       <SetupPagesPairsButtons />

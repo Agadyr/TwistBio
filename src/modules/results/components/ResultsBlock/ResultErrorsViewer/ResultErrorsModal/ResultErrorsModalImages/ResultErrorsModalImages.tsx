@@ -61,8 +61,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
   const [croppedSampleImgSrc, setCroppedSampleImgSrc] = useState<string>()
   const [croppedReferenceImgSrc, setCroppedReferenceImgSrc] = useState<string>()
   const [croppedMaskImgSrc, setCroppedMaskSrc] = useState<string>()
-  const [croppedImageCropRatio, setCroppedImageCropRatio] = useState<string>()
-  const [croppedBarcodeCropRatio, setCroppedBarcodeCropRatio] = useState<string>()
   const { comparison } = useComparison(Number(comparisonId))
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
@@ -143,15 +141,15 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     loadAndCropImage(referenceImgSrc, cropRatio, setCroppedReferenceImgSrc)
   }, [referenceImgSrc, canvasRef.current, error])
   useEffect(() => {
-    if (!sampleImgSrc || !canvasRef.current) {
+    if (!sampleImgSrc || !canvasRef.current || !referenceImgSrc) {
       return
     }
-    if (error.type.name === 'Штрихкод') {
-      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedImageCropRatio)
-    } else if (error.type.name === 'Баркод') {
-      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedBarcodeCropRatio)
+    if ((error.type.name === 'Штрихкод' || error.type.name === 'Баркод') && pairErrors?.maskFullUrl) {
+      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedSampleImgSrc)
+      loadAndCropImage(referenceImgSrc, error.barcodeCropRatio, setCroppedReferenceImgSrc)
+      loadAndCropImage(pairErrors?.maskFullUrl, error.barcodeCropRatio, setCroppedMaskSrc)
     }
-  }, [sampleImgSrc, canvasRef.current, error])
+  }, [sampleImgSrc, canvasRef.current, error, pairErrors, referenceImgSrc])
 
   useEffect(() => {
     if (pairErrors && pairErrors?.maskFullUrl && canvasRef.current) {
@@ -187,12 +185,14 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
         <ImageSection src={error.imageFullUrl} title="Баркод (значение)" />
       )}
 
-      {error.type.name === 'Штрихкод' && comparison?.stage.comparisonType !== 'текстовое сравнение' && (
-        <ImageSection src={croppedImageCropRatio} title="Штрихкод" />
-      )}
-      {error.type.name === 'Баркод' && comparison?.stage.comparisonType !== 'текстовое сравнение' && (
-        <ImageSection src={croppedBarcodeCropRatio} title="Баркод" />
-      )}
+      {(error.type.name === 'Штрихкод' || error.type.name === 'Баркод') &&
+        comparison?.stage.comparisonType !== 'текстовое сравнение' && (
+          <>
+            <ImageSection src={croppedReferenceImgSrc} title="Эталон" />
+            <ImageSection src={croppedSampleImgSrc} title="Образец" />
+            <ImageSection src={croppedMaskImgSrc} title="Маска" />
+          </>
+        )}
 
       {error.type.name === 'Опечатка' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>

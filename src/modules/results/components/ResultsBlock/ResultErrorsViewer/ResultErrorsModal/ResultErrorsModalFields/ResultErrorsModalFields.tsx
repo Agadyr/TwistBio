@@ -68,10 +68,7 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
             />
           </Box>
         )}
-        {(currentError.type.name === 'Баркод' ||
-          currentError.type.name === 'Штрихкод' ||
-          currentError.type.name === 'Штрихкод (значение)' ||
-          currentError.type.name === 'Баркод (значение)') && (
+        {(currentError.type.name === 'Штрихкод (значение)' || currentError.type.name === 'Баркод (значение)') && (
           <>
             <Box className={classes.selects2}>
               <ResultSelect
@@ -92,6 +89,33 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
             <Typography style={{ marginBottom: '20px' }} variant="h6">
               Распознано: {currentError.detectedValue}
             </Typography>
+          </>
+        )}
+        {(currentError.type.name === 'Баркод' || currentError.type.name === 'Штрихкод') && (
+          <>
+            <Box className={classes.selects}>
+              <ResultSelect
+                error={errorStatusesRequestError?.message}
+                errorName="Статус"
+                label={currentError.status ? currentError.status.name : 'Статус'}
+                name="select1"
+                selectOptions={errorStatuses}
+              />
+              <ResultSelect
+                error={errorTypesRequestError?.message}
+                errorName="Тип"
+                label={currentError.type ? currentError.type.name : 'Тип'}
+                name="select2"
+                selectOptions={errorTypes}
+              />
+              <ResultSelect
+                error={errorSeveritiesRequestError?.message}
+                errorName="Критичность"
+                label={currentError.severity ? currentError.severity.name : 'Критичность'}
+                name="select3"
+                selectOptions={errorSeverities}
+              />
+            </Box>
           </>
         )}
         {(currentError.type.name === 'Опечатка' ||
