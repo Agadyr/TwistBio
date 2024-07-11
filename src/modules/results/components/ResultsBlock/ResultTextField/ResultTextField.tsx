@@ -1,5 +1,5 @@
-import { FC, ReactNode } from 'react'
-import { Controller, useFormContext } from 'react-hook-form'
+import { FC, ReactNode, useEffect } from 'react'
+import { Controller, useFormContext, useWatch } from 'react-hook-form'
 
 import { Box, FormControl, TextField, Typography } from '@mui/material'
 
@@ -10,7 +10,13 @@ interface ResultTextFieldProps {
 }
 
 export const ResultTextField: FC<ResultTextFieldProps> = ({ name, error, label }) => {
-  const { control } = useFormContext()
+  const { control, setValue } = useFormContext()
+
+  const currentError = useWatch({ control, name: 'error' })
+
+  useEffect(() => {
+    setValue(name, '')
+  }, [currentError, setValue, name])
 
   return (
     <Box alignItems="center" display="flex" gap="20px">

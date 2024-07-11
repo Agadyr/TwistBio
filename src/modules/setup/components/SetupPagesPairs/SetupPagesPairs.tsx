@@ -24,7 +24,7 @@ export const SetupPagesPairs = () => {
   return (
     <>
       <SetupPagesPairsButtons />
-      <Typography>Добавлено к сравнению:</Typography>
+      <Typography>Добавлено к сравнению: {comparisonPagesPairs?.length}</Typography>
       <Box className={classes.pairs}>
         {comparisonPagesPairsAreLoading && <CircularProgress />}
         {comparisonPagesPairsRequestError && <Error>Страниц нет</Error>}

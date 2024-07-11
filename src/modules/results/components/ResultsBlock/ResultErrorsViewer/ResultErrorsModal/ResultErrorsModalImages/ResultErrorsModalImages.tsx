@@ -163,7 +163,10 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     error,
   ])
   return (
-    <Box className={classes.images}>
+    <Box
+      className={classes.images}
+      style={{ justifyContent: comparison?.stage.comparisonType !== 'текстовое сравнение' ? 'space-between' : 'none' }}
+    >
       <canvas ref={canvasRef} style={{ display: 'none' }} />
 
       {error.type.name !== 'Баркод (значение)' &&
@@ -200,7 +203,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
             <Typography>Эталон</Typography>
             <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
           </Box>
-          <Box> {croppedSampleImgSrc && <ImageSection src={croppedSampleImgSrc} title="Баркод" />} </Box>
+          <Box> {croppedSampleImgSrc && <ImageSection src={croppedSampleImgSrc} title="Образец" />} </Box>
         </>
       )}
 

@@ -24,16 +24,18 @@ export const SetupPagesPairsButtons = () => {
   const { comparisonPagesPairs } = useComparisonPagesPairs(comparisonId)
   const referencePages = referenceFilePages?.items || []
   const samplePages = sampleFilePages?.items || []
+  const excludedFooterHeaderReference = useSelectedPages((state) => state.isExcludedFooterHeaderReference)
+  const excludedFooterHeaderSample = useSelectedPages((state) => state.isExcludedFooterHeaderSample)
 
   const addToComparison = () => {
     createPair({
       comparisonId,
       pairData: {
         referencePageId,
-        referencePageExcludeFooterHeader: false,
+        referencePageExcludeFooterHeader: excludedFooterHeaderReference,
         referencePageCropRatio: referencePageFrames[referencePageId] || initCropRatio,
         samplePageId,
-        samplePageExcludeFooterHeader: false,
+        samplePageExcludeFooterHeader: excludedFooterHeaderSample,
         samplePageCropRatio: samplePageFrames[samplePageId] || initCropRatio,
       },
     })

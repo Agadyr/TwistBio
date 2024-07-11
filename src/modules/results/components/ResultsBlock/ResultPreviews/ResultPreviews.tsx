@@ -34,13 +34,22 @@ export const ResultPreviews = () => {
   const [openModalMask, setOpenModalMask] = useState(false)
   const [openModalContur, setOpenModalContur] = useState(false)
   const [openModalEtalon, setOpenModalEtalon] = useState(true)
-  const [fontSize, setFontSize] = useState(false)
+  const [fontSize, setFontSize] = useState<string>('16px')
+  const [top, setTop] = useState<string>('-20px')
   const handleZoom = (ref: any, event: any) => {
     const { scale } = ref.state
-    if (scale >= 2) {
-      setFontSize(true)
+    if (scale >= 3) {
+      setFontSize('4px')
+      setTop('-10px')
+    } else if (scale >= 2.5) {
+      setFontSize('6px')
+      setTop('-15px')
+    } else if (scale >= 2) {
+      setFontSize('8px')
+    } else if (scale >= 1) {
+      setFontSize('12px')
     } else if (scale <= 2) {
-      setFontSize(false)
+      setFontSize('16px')
     }
   }
   return (
@@ -120,7 +129,7 @@ export const ResultPreviews = () => {
                     pageNum={samplePage.number}
                     ref={imageRef}
                   />
-                  <ResultErrorFrames fontSize={fontSize} imageRef={imageRef} />
+                  <ResultErrorFrames fontSize={fontSize} imageRef={imageRef} top={top} />
                 </>
               )}
             </div>

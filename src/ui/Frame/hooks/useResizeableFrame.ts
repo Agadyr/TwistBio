@@ -40,12 +40,10 @@ export const useResizeableFrame = ({ active, frameData, setFrameData, scale, con
       const dy = event.clientY - startClickY
       startClickY = event.clientY
 
-      if (containerRect && event.clientY < containerRect.top) {
-        return
-      }
       let { height, top } = refFrameData.current
-      const newHeight = clamp(height - dy / scale, 0, maxHeight - top)
+      const newHeight = clamp(height - dy / scale, 0, height + top)
       const newTop = clamp(top + dy / scale, 0, maxHeight - newHeight)
+
       if (newHeight > 0) {
         height = newHeight
         top = newTop
@@ -74,52 +72,47 @@ export const useResizeableFrame = ({ active, frameData, setFrameData, scale, con
       }
     }
 
-    const onMouseUpRightResize = () => {
+    const onMouseUpResize = () => {
       document.removeEventListener('mousemove', onMouseMoveRightResize)
+      document.removeEventListener('mousemove', onMouseMoveTopResize)
+      document.removeEventListener('mousemove', onMouseMoveBottomResize)
+      document.removeEventListener('mousemove', onMouseMoveLeftResize)
+      document.removeEventListener('mouseup', onMouseUpResize)
     }
 
     const onMouseDownRightResize = (event: MouseEvent) => {
       startClickX = event.clientX
       document.addEventListener('mousemove', onMouseMoveRightResize)
-      document.addEventListener('mouseup', onMouseUpRightResize)
-    }
-
-    const onMouseUpTopResize = () => {
-      document.removeEventListener('mousemove', onMouseMoveTopResize)
+      document.addEventListener('mouseup', onMouseUpResize)
     }
 
     const onMouseDownTopResize = (event: MouseEvent) => {
       startClickY = event.clientY
       document.addEventListener('mousemove', onMouseMoveTopResize)
-      document.addEventListener('mouseup', onMouseUpTopResize)
-    }
-
-    const onMouseUpBottomResize = () => {
-      document.removeEventListener('mousemove', onMouseMoveBottomResize)
+      document.addEventListener('mouseup', onMouseUpResize)
     }
 
     const onMouseDownBottomResize = (event: MouseEvent) => {
       startClickY = event.clientY
       document.addEventListener('mousemove', onMouseMoveBottomResize)
-      document.addEventListener('mouseup', onMouseUpBottomResize)
-    }
-
-    const onMouseUpLeftResize = () => {
-      document.removeEventListener('mousemove', onMouseMoveLeftResize)
+      document.addEventListener('mouseup', onMouseUpResize)
     }
 
     const onMouseDownLeftResize = (event: MouseEvent) => {
       startClickX = event.clientX
       document.addEventListener('mousemove', onMouseMoveLeftResize)
-      document.addEventListener('mouseup', onMouseUpLeftResize)
+      document.addEventListener('mouseup', onMouseUpResize)
     }
 
     const resizerRight = refResizerRight.current
     resizerRight?.addEventListener('mousedown', onMouseDownRightResize)
+
     const resizerTop = refResizerTop.current
     resizerTop?.addEventListener('mousedown', onMouseDownTopResize)
+
     const resizerBottom = refResizerBottom.current
     resizerBottom?.addEventListener('mousedown', onMouseDownBottomResize)
+
     const resizerLeft = refResizerLeft.current
     resizerLeft?.addEventListener('mousedown', onMouseDownLeftResize)
 
@@ -128,8 +121,13 @@ export const useResizeableFrame = ({ active, frameData, setFrameData, scale, con
       resizerTop?.removeEventListener('mousedown', onMouseDownTopResize)
       resizerBottom?.removeEventListener('mousedown', onMouseDownBottomResize)
       resizerLeft?.removeEventListener('mousedown', onMouseDownLeftResize)
+      document.removeEventListener('mousemove', onMouseMoveRightResize)
+      document.removeEventListener('mousemove', onMouseMoveTopResize)
+      document.removeEventListener('mousemove', onMouseMoveBottomResize)
+      document.removeEventListener('mousemove', onMouseMoveLeftResize)
+      document.removeEventListener('mouseup', onMouseUpResize)
     }
-  }, [scale, active, maxWidth, maxHeight])
+  }, [active, maxWidth, maxHeight, scale, containerRect, setFrameData])
 
   return { refResizerLeft, refResizerTop, refResizerRight, refResizerBottom }
 }

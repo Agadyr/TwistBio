@@ -6,6 +6,7 @@ import { comparisonErrorsQueryKey } from './types'
 export const useComparisonErrorSeverities = () => {
   const { data, isPending, error } = useQuery({
     queryKey: [comparisonErrorsQueryKey],
+    // для будущей отправки запроса в бэк для того чтобы взять оттуда критичности ошибок
     // queryFn: comparisonErrorsApi.getErrorSeverities,
     queryFn: () => Promise.resolve(errorsSever),
   })

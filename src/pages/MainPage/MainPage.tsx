@@ -2,7 +2,7 @@ import { toast } from 'react-toastify'
 
 import { Box, Button } from '@mui/material'
 import { useTitle } from 'ahooks'
-import { UploadTypes } from 'modules/type/constatns/type'
+import { UploadTypes } from 'modules/type/constants/type'
 import { useComparisonStages } from 'modules/type/queries/useComparisonStages'
 import { useCreateComparison } from 'modules/type/queries/useCreateComparison'
 

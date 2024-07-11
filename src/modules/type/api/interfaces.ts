@@ -1,6 +1,8 @@
 import { DateFormat } from 'interfaces/components.interfaces'
-import { UploadTypes } from 'modules/type/constatns/type'
+import { UploadTypes } from 'modules/type/constants/type'
 
+//: типы и интерфейсы лучше хранить в раздельных файлах.
+//Review: Думаю это из за того что это все относится к сравнению файлов .
 export type UploadType = UploadTypes.Pack | UploadTypes.Instruction
 
 export interface ComparisonType {

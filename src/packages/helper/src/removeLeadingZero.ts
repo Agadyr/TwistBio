@@ -1,9 +1,10 @@
-export const removeLeadingZero = (str?: string | null) => {
-  if (!str) {
+//REVIEW: изменил str на string.
+export const removeLeadingZero = (string?: string | null) => {
+  if (!string) {
     return ''
   }
-  if (str[0] === '0' && str[1] !== '.' && str.length > 1) {
-    return str.slice(1)
+  if (string[0] === '0' && string[1] !== '.' && string.length > 1) {
+    return string.slice(1)
   }
-  return str
+  return string
 }

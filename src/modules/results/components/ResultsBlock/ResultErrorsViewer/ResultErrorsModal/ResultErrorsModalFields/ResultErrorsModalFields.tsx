@@ -48,21 +48,21 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
             <ResultSelect
               error={errorStatusesRequestError?.message}
               errorName="Статус"
-              label={currentError.status ? currentError.status.name : 'Статус'}
+              label={currentError.status ? currentError.status.name : ''}
               name="select1"
               selectOptions={errorStatuses}
             />
             <ResultSelect
               error={errorTypesRequestError?.message}
               errorName="Тип"
-              label={currentError.type ? currentError.type.name : 'Тип'}
+              label={currentError.type ? currentError.type.name : ''}
               name="select2"
               selectOptions={errorTypes}
             />
             <ResultSelect
               error={errorSeveritiesRequestError?.message}
               errorName="Критичность"
-              label={currentError.severity ? currentError.severity.name : 'Критичность'}
+              label={currentError.severity ? currentError.severity.name : 'Не заполнено'}
               name="select3"
               selectOptions={errorSeverities}
             />
@@ -74,14 +74,14 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
               <ResultSelect
                 error={errorStatusesRequestError?.message}
                 errorName="Статус"
-                label={currentError.status ? currentError.status.name : 'Статус'}
+                label={currentError.status ? currentError.status.name : ''}
                 name="select1"
                 selectOptions={errorStatuses}
               />
               <ResultSelect
                 error={errorTypesRequestError?.message}
                 errorName="Тип"
-                label={currentError.type ? currentError.type.name : 'Тип'}
+                label={currentError.type ? currentError.type.name : ''}
                 name="select2"
                 selectOptions={errorTypes}
               />
@@ -97,21 +97,21 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
               <ResultSelect
                 error={errorStatusesRequestError?.message}
                 errorName="Статус"
-                label={currentError.status ? currentError.status.name : 'Статус'}
+                label={currentError.status ? currentError.status.name : ''}
                 name="select1"
                 selectOptions={errorStatuses}
               />
               <ResultSelect
                 error={errorTypesRequestError?.message}
                 errorName="Тип"
-                label={currentError.type ? currentError.type.name : 'Тип'}
+                label={currentError.type ? currentError.type.name : ''}
                 name="select2"
                 selectOptions={errorTypes}
               />
               <ResultSelect
                 error={errorSeveritiesRequestError?.message}
                 errorName="Критичность"
-                label={currentError.severity ? currentError.severity.name : 'Критичность'}
+                label={currentError.severity ? currentError.severity.name : 'Не заполнено'}
                 name="select3"
                 selectOptions={errorSeverities}
               />
@@ -126,21 +126,21 @@ export const ResultErrorsModalFields: FC<ResultErrorsModalProps> = ({ error }) =
               <ResultSelect
                 error={errorStatusesRequestError?.message}
                 errorName="Статус"
-                label={currentError.status ? currentError.status.name : 'Статус'}
+                label={currentError.status ? currentError.status.name : ''}
                 name="select1"
                 selectOptions={errorStatuses}
               />
               <ResultSelect
                 error={errorTypesRequestError?.message}
                 errorName="Тип"
-                label={currentError.type ? currentError.type.name : 'Тип'}
+                label={currentError.type ? currentError.type.name : ''}
                 name="select2"
                 selectOptions={errorTypesText}
               />
               <ResultSelect
                 error={errorSeveritiesRequestError?.message}
                 errorName="Критичность"
-                label={currentError.severity ? currentError.severity.name : 'Критичность'}
+                label={currentError.severity ? currentError.severity.name : 'Не заполнено'}
                 name="select3"
                 selectOptions={errorSeverities}
               />

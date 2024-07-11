@@ -31,27 +31,37 @@ export const Frame: FC<Props> = ({ scale, cropRatio, resizeable = false, refCont
     refContainer,
   })
 
-  const { run: onChangeFrame } = useDebounceFn(onFrameChange, { wait: 150 })
+  const { run: onChangeFrame } = useDebounceFn(onFrameChange, { wait: 100 })
 
   const update = () => {
     const rect = refContainer.current?.getBoundingClientRect()
-    setContainerRect(rect)
+    if (rect) {
+      setContainerRect(rect)
+    }
   }
-  const { run: onResizeThrottled } = useThrottleFn(update, { wait: 50 })
+
+  const { run: onResizeThrottled } = useThrottleFn(update, { wait: 100 })
   useResizeObserver({ ref: refContainer, callback: onResizeThrottled, enabled: resizeable })
-  useEffect(update, [refContainer.current])
 
   useEffect(() => {
-    onChangeFrame(frameToCropRatio(frameData, containerRect))
+    update()
+  }, [refContainer.current])
+
+  useEffect(() => {
+    if (containerRect) {
+      onChangeFrame(frameToCropRatio(frameData, containerRect))
+    }
   }, [frameData, containerRect])
 
   useDeepCompareEffect(() => {
-    setFrameData(cropRatioToFrame(cropRatio, containerRect))
+    if (containerRect) {
+      setFrameData(cropRatioToFrame(cropRatio, containerRect))
+    }
   }, [cropRatio, containerRect])
 
   return (
     <div className={classes.container}>
-      <div className={classes.resizeable} style={calcStyles(frameData)}>
+      <div className={cx(classes.resizeable, { [classes.active]: resizeable })} style={calcStyles(frameData)}>
         <div className={cx(classes.resizer, classes.resizerLeft)} ref={refResizerLeft} />
         <div className={cx(classes.resizer, classes.resizerTop)} ref={refResizerTop} />
         <div className={cx(classes.resizer, classes.resizerRight)} ref={refResizerRight} />

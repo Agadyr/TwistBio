@@ -3,11 +3,13 @@ import { FC, useRef } from 'react'
 import CloseIcon from '@mui/icons-material/Close'
 import SettingsBackupRestoreIcon from '@mui/icons-material/SettingsBackupRestore'
 import { Box, IconButton } from '@mui/material'
+import { useParams } from '@tanstack/react-router'
 import { useVirtualizer } from '@tanstack/react-virtual'
 import cx from 'clsx'
 import { FilePreview } from 'components/common/FilePreview'
 import { ComparisonOutlineResponse } from 'modules/setup/api'
 import { SetupFileInput } from 'modules/setup/components/SetupSelectionArea/SetupFileInput'
+import { useDeletePage } from 'modules/setup/queries/useDeletePage'
 import { useSelectedPages } from 'modules/setup/store/useSelectedPages'
 
 import classes from './SetupPagesViewer.module.scss'
@@ -19,8 +21,10 @@ interface SetupPagesViewerProps {
 }
 
 export const SetupPagesViewer: FC<SetupPagesViewerProps> = ({ accept, filesPages, isReference = false }) => {
+  const { comparisonId } = useParams({ from: '/_comparison/$comparisonId/setup' })
   const pagesListRef = useRef<HTMLDivElement | null>(null)
   const areaType = isReference ? 'reference' : 'sample'
+  const { deletePage } = useDeletePage()
   const activePageId = useSelectedPages((state) => state.activePageIndex[areaType])
   const setActivePageIndex = useSelectedPages((state) => state.setActivePageIndex)
   const removePage = useSelectedPages((state) => state.removePage)
@@ -74,6 +78,7 @@ export const SetupPagesViewer: FC<SetupPagesViewerProps> = ({ accept, filesPages
                         onClick={(event) => {
                           event.stopPropagation()
                           removePage(id, isReference)
+                          deletePage({ comparisonId: Number(comparisonId), pageId: id })
                         }}
                       >
                         <CloseIcon />

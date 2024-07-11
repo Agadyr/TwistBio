@@ -6,6 +6,7 @@ import { comparisonErrorsQueryKey } from './types'
 export const useComparisonErrorTypes = () => {
   const { data, isPending, error } = useQuery({
     queryKey: [comparisonErrorsQueryKey],
+    // для будущей отправки запроса в бэк для того чтобы взять оттуда типа ошибок
     // queryFn: comparisonErrorsApi.getErrorTypes,
     queryFn: () => Promise.resolve(errorsType),
   })

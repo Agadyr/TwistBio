@@ -8,7 +8,7 @@ import { useInitForm } from 'config/rhf'
 import { useComparison } from 'modules/comparison/queries'
 import { TypeBlockNextStepButton } from 'modules/type/components/TypeBlockNextStepButton'
 import { TypeBlockRadioGroup } from 'modules/type/components/TypeBlockRadioGroup'
-import { UploadTypes } from 'modules/type/constatns/type'
+import { UploadTypes } from 'modules/type/constants/type'
 import { typeBlockSchema } from 'modules/type/helpers/validation'
 import { ComparisonFormData } from 'modules/type/interfaces/typeBlock'
 import { useComparisonStages } from 'modules/type/queries/useComparisonStages'
@@ -28,9 +28,11 @@ export const TypeBlock = () => {
 
   const navigate = useNavigate()
   const params = useParams({ from: '/_comparison/$comparisonId/type' })
+  //TODO: 'comparisonId' does not exist on type 'Record<never, string>'
   const comparisonId = Number(params.comparisonId)
 
   const onSuccessCreateComparison = () =>
+    //TODO: 'comparisonId' does not exist on type 'Record<never, string>'
     navigate({ to: '/$comparisonId/setup', params: { comparisonId: params.comparisonId } })
 
   const { handleSubmit, getValues, reset } = methods
@@ -53,9 +55,7 @@ export const TypeBlock = () => {
       reset({ uploadType: uploadType as UploadTypes, [field]: item?.id || '' })
     }
   }, [comparison, packs, instructions])
-
   const onError = () => toast.error('Что то пошло не так, попробуйте обновить страницу.')
-
   return (
     <FormProvider {...methods}>
       <form className={classes.form} onSubmit={handleSubmit(onSubmit, onError)}>

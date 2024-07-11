@@ -1,3 +1,4 @@
+//TODO: enum лучше хранить в отдельной директории - enums или entities (где могут быть так же интерфейсы типы модели).
 export enum ComparisonStep {
   Type = 'Type',
   Setup = 'Setup',
@@ -5,9 +6,15 @@ export enum ComparisonStep {
   Results = 'Results',
   Conclusion = 'Conclusion',
 }
-
 export const maxSteps = 5
 
+export const typographyVariant = {
+  [ComparisonStep.Type]: 'h5',
+  [ComparisonStep.Setup]: 'h5',
+  [ComparisonStep.ReceiveResults]: 'h4',
+  [ComparisonStep.Results]: 'h5',
+  [ComparisonStep.Conclusion]: 'h3',
+}
 export const stepNumber = {
   [ComparisonStep.Type]: 1,
   [ComparisonStep.Setup]: 2,

@@ -14,8 +14,11 @@ interface Props {
   children?: ReactNode
 }
 
+//Review: лучше вынестиPdfPreview в папку components внутри FilePreview
+// Она булет возможно будет использоваться в других компонентах
 export const PdfPreview = forwardRef<HTMLImageElement, Props>(({ fileUrl, pageNum, className, children }, ref) => {
   const [imgSrc, setImgSrc] = useState('')
+
   useEffect(() => {
     pdfPreviewManager
       .getPreview(fileUrl, pageNum)
@@ -31,7 +34,7 @@ export const PdfPreview = forwardRef<HTMLImageElement, Props>(({ fileUrl, pageNu
         </Box>
       ) : (
         <>
-          <img className={cx(className, classes.img)} ref={ref} src={imgSrc} />
+          <img className={className} ref={ref} src={imgSrc} />
           {children}
         </>
       )}

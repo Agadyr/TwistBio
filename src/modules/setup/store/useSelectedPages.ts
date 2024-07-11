@@ -17,11 +17,15 @@ export interface UseRemovedPages {
   activePageIndex: ActivePageIndex
   samplePageFrames: Record<number, CropRatio>
   referencePageFrames: Record<number, CropRatio>
+  isExcludedFooterHeaderReference: boolean
+  isExcludedFooterHeaderSample: boolean
   removePage: (pageIndex: number, isReference: boolean) => void
   restorePage: (pageIndex: number, isReference: boolean) => void
   setActivePageIndex: (pageIndex: number, isReference: boolean) => void
   setSamplePageFrame: (pageIndex: number, cropRatio: CropRatio) => void
   setReferencePageFrame: (pageIndex: number, cropRatio: CropRatio) => void
+  setExcludedFooterHeaderReference: (value: boolean) => void
+  setExcludedFooterHeaderSample: (value: boolean) => void
 }
 
 export const useSelectedPages = create<UseRemovedPages>()(
@@ -37,6 +41,8 @@ export const useSelectedPages = create<UseRemovedPages>()(
       },
       samplePageFrames: {},
       referencePageFrames: {},
+      isExcludedFooterHeaderReference: false,
+      isExcludedFooterHeaderSample: false,
       setActivePageIndex: (pageIndex, isReference) => {
         const key = isReference ? 'reference' : 'sample'
         set((prev) => ({ activePageIndex: { ...prev.activePageIndex, [key]: pageIndex } }))
@@ -56,6 +62,12 @@ export const useSelectedPages = create<UseRemovedPages>()(
       },
       setReferencePageFrame: (pageIndex, cropRatio) => {
         set((prev) => ({ referencePageFrames: { ...prev.referencePageFrames, [pageIndex]: cropRatio } }))
+      },
+      setExcludedFooterHeaderReference: (value) => {
+        set({ isExcludedFooterHeaderReference: value })
+      },
+      setExcludedFooterHeaderSample: (value) => {
+        set({ isExcludedFooterHeaderSample: value })
       },
     }),
     {

@@ -2,7 +2,7 @@ import { Controller, useFormContext } from 'react-hook-form'
 
 import { FormControl, FormControlLabel, Radio, RadioGroup, Typography } from '@mui/material'
 import { TypeBlockSelect } from 'modules/type/components/TypeBlockSelect'
-import { UploadTypes } from 'modules/type/constatns/type'
+import { UploadTypes } from 'modules/type/constants/type'
 import { useComparisonStages } from 'modules/type/queries/useComparisonStages'
 
 export const TypeBlockRadioGroup = () => {

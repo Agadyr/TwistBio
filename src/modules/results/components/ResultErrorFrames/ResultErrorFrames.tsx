@@ -12,10 +12,11 @@ import classes from './ResultErrorFrames.module.scss'
 
 interface Props {
   imageRef: RefObject<HTMLImageElement>
-  fontSize: any
+  fontSize: string
+  top: string
 }
 
-export const ResultErrorFrames: FC<Props> = ({ imageRef, fontSize }) => {
+export const ResultErrorFrames: FC<Props> = ({ imageRef, fontSize, top }) => {
   const { comparisonId } = useParams({ from: '/_comparison/$comparisonId/results' })
   const { selectedError, setSelectedError, clearErrorSelection, selectedPair, hoveredError } = useResultErrors()
   const { pairErrors } = usePairErrors(Number(comparisonId), selectedPair as number)
@@ -44,9 +45,10 @@ export const ResultErrorFrames: FC<Props> = ({ imageRef, fontSize }) => {
           active={selectedError === id}
           cropRatio={sampleCropRatio || imageCropRatio}
           errorNum={number}
-          fontSize={fontSize}
           hovered={hoveredError === id}
           key={id}
+          newfontSize={fontSize}
+          newTop={top}
           onClick={() => setSelectedError(id)}
         />
       ))}

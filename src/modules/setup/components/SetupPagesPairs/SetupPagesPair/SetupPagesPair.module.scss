@@ -5,7 +5,8 @@
   display: flex;
   gap: 10px;
   align-items: center;
-  width: 300px;
+  min-width: 300px;
+  max-width: 300px;
   height: 220px;
   padding: 10px 10px 10px;
   border: 1px solid $border-400;

@@ -15,6 +15,7 @@ export interface ComparisonPairError {
   comment: string | null
   reference_crop_ratio: CropRatio | null
   sample_crop_ratio: CropRatio | null
+  sampleCropRatio?: CropRatio | null
   content: string[] | null
   bestMatch: Array<string | null> | null
   detectedValue: string | null

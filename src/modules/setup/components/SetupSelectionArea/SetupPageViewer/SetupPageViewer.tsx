@@ -43,9 +43,6 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
       isReference ? state.referencePageFrames[activePageId] : state.samplePageFrames[activePageId],
     ) || initCropRatio
 
-  // const setReferencePageFrame = useSelectedPages((state) => state.setReferencePageFrame)
-  // const setSamplePageFrame = useSelectedPages((state) => state.setSamplePageFrame)
-
   const removedPages = useSelectedPages((state) => state.removedPages[areaType])
   const isRemovedPage = removedPages.includes(activePageId)
   const activePage = filesPages.find((page) => page.id === activePageId)
@@ -134,7 +131,7 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
 
                 {withFrame && isReference && (
                   <Frame
-                    cropRatio={normBoxCoordinates.norm_box_coordinates || pageFrame}
+                    cropRatio={normBoxCoordinates || pageFrame}
                     onFrameChange={(cropRatio) => {
                       setPageFrame(activePageId, cropRatio)
                     }}
@@ -145,7 +142,7 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
                 )}
                 {withFrame && !isReference && (
                   <Frame
-                    cropRatio={dataSample.norm_box_coordinates || pageFrame}
+                    cropRatio={dataSample || pageFrame}
                     onFrameChange={(cropRatio) => {
                       setPageFrame(activePageId, cropRatio)
                     }}

@@ -1,5 +1,8 @@
 import { isObject } from './isObject'
 
+//Review: Использование any крайне нежелательно. Тип здесь : string | object | [string].
+// Может именно здесь оставить any потому здесь реально могут приходить разные данные для экстракта и также если
+// изменяю на другие типы ругается на length
 export const extractString = (value: any) => {
   if (typeof value === 'string') {
     return value
