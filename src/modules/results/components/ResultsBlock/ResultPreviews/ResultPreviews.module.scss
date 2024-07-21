@@ -80,6 +80,17 @@
   margin-top: 40px;
 }
 
+.referenceWrapContainer {
+  position: relative;
+  display: flex !important;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  width: 730px;
+  height: max-content;
+  margin-top: 40px;
+}
+
 .df {
   display: flex;
   align-items: center;

@@ -1,5 +1,5 @@
-import { useRef, useState } from 'react'
-import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
+import { useEffect, useRef, useState } from 'react'
+import { ReactZoomPanPinchRef, TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 
 import { Box } from '@mui/material'
 import { useParams } from '@tanstack/react-router'
@@ -18,13 +18,16 @@ export const ResultPreviews = () => {
   const comparisonId = Number(stringId)
   const { comparison } = useComparison(comparisonId)
   const imageRef = useRef<HTMLImageElement>(null)
+  const imageReRef = useRef<HTMLImageElement>(null)
   const isTextComparison = comparison?.stage.comparisonType === TypeofComparison.Text
   const { selectedPair } = useResultErrors()
   const { pairErrors, pairErrorsAreLoading } = usePairErrors(Number(comparisonId), selectedPair as number)
   const { comparisonPagesPairs } = useComparisonPagesPairs(comparisonId)
+  const selectedCropRatio = useResultErrors((state) => state.selectedCropRatio)
 
   const pagePair = comparisonPagesPairs?.find((comparisonPagesPair) => comparisonPagesPair.id === selectedPair)
   const { referencePage, samplePage } = pagePair || {}
+
   const contentStyle = {
     width: '100%',
     display: 'flex',
@@ -34,16 +37,18 @@ export const ResultPreviews = () => {
   const [openModalMask, setOpenModalMask] = useState(false)
   const [openModalContur, setOpenModalContur] = useState(false)
   const [openModalEtalon, setOpenModalEtalon] = useState(true)
+
   const [fontSize, setFontSize] = useState<string>('16px')
-  const [top, setTop] = useState<string>('-20px')
+  const [margintop, setmarginTop] = useState<string>('-20px')
+
   const handleZoom = (ref: any, event: any) => {
     const { scale } = ref.state
     if (scale >= 3) {
       setFontSize('4px')
-      setTop('-10px')
+      setmarginTop('-10px')
     } else if (scale >= 2.5) {
       setFontSize('6px')
-      setTop('-15px')
+      setmarginTop('-15px')
     } else if (scale >= 2) {
       setFontSize('8px')
     } else if (scale >= 1) {
@@ -52,6 +57,7 @@ export const ResultPreviews = () => {
       setFontSize('16px')
     }
   }
+  console.log(selectedCropRatio)
   return (
     <Box className={classes.viewBlock}>
       <Box className={classes.viewItem}>
@@ -100,10 +106,16 @@ export const ResultPreviews = () => {
                 />
               )}
               {!!referencePage && openModalEtalon && !openModalContur && !openModalMask && (
-                <FilePreview
-                  fileUrl={isTextComparison ? referencePage.previewFullUrl : referencePage.previewMlCroppedFullUrl}
-                  pageNum={referencePage.number}
-                />
+                <>
+                  <div className={classes.referenceWrapContainer}>
+                    <FilePreview
+                      fileUrl={isTextComparison ? referencePage.previewFullUrl : referencePage.previewMlCroppedFullUrl}
+                      pageNum={referencePage.number}
+                      ref={imageReRef}
+                    />
+                    <ResultErrorFrames fontSize={fontSize} imageRef={imageReRef} top={margintop} />
+                  </div>
+                </>
               )}
               {openModalContur && !openModalEtalon && !openModalMask && (
                 <img
@@ -121,18 +133,18 @@ export const ResultPreviews = () => {
         <span className={classes.itemLabel}>Образец</span>
         <TransformWrapper onZoom={handleZoom}>
           <TransformComponent contentStyle={contentStyle}>
-            <div className={classes.sampleWrapContainer}>
-              {!!samplePage && (
-                <>
+            {!!samplePage && (
+              <>
+                <div className={classes.sampleWrapContainer}>
                   <FilePreview
                     fileUrl={isTextComparison ? samplePage.previewFullUrl : samplePage.previewMlCroppedFullUrl}
                     pageNum={samplePage.number}
                     ref={imageRef}
                   />
-                  <ResultErrorFrames fontSize={fontSize} imageRef={imageRef} top={top} />
-                </>
-              )}
-            </div>
+                  <ResultErrorFrames fontSize={fontSize} imageRef={imageRef} top={margintop} />
+                </div>
+              </>
+            )}
           </TransformComponent>
         </TransformWrapper>
       </Box>

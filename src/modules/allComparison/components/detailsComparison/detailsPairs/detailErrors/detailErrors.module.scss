@@ -1,0 +1,21 @@
+@import 'src/assets/scss/vars';
+
+.content {
+  padding-bottom: 20px;
+}
+
+.img {
+  width: 300px;
+  height: 140px;
+  object-fit: contain;
+}
+
+.body2 {
+  padding: 3px 0;
+  font-size: 17px !important;
+}
+
+.the-numbers {
+  width: 200px !important;
+  height: 150px;
+}

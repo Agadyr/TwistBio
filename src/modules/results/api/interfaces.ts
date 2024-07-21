@@ -14,8 +14,11 @@ export interface ComparisonPairError {
   status: ComparisonError | null
   comment: string | null
   reference_crop_ratio: CropRatio | null
+  referenceCropRatio?: CropRatio | null
   sample_crop_ratio: CropRatio | null
   sampleCropRatio?: CropRatio | null
+  barcode_crop_ratio: CropRatio | null
+  barcodeCropRatio?: CropRatio | null
   content: string[] | null
   bestMatch: Array<string | null> | null
   detectedValue: string | null
@@ -30,4 +33,13 @@ export interface ComparisonPairErrors {
   outlineMaskFullUrl: string | null
   referenceColorMaskFullUrl: string | null
   sampleColorMaskFullUrl: string | null
+}
+export interface ComparisonReport {
+  id: number
+  preview_full_url: string
+}
+
+export interface SendReport {
+  status: number
+  message: string
 }

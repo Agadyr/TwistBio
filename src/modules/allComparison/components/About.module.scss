@@ -1,0 +1,55 @@
+@import 'src/assets/scss/vars';
+
+.icons svg {
+  margin-right: 10px;
+  color: #676666;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.h1 {
+  margin: 20px 0 !important;
+}
+
+.h2 {
+  margin-bottom: 5px;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+.h3 {
+  margin: 40px 0 20px;
+  font-size: 30px;
+  text-align: center;
+}
+
+.content {
+  padding-bottom: 20px;
+}
+
+.w5 {
+  width: 60%;
+}
+
+.w2 {
+  width: 40%;
+}
+
+.df img {
+  width: 420px;
+  padding: 10px 0;
+}
+
+.body2 {
+  padding: 3px 0;
+  font-size: 17px !important;
+}
+
+.the-numbers {
+  width: 200px !important;
+  height: 150px;
+}
+
+.number {
+  width: 50px;
+}

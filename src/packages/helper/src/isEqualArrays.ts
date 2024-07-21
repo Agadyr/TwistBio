@@ -11,6 +11,5 @@ export const isEqualArrays = <T>(arr1: T[], arr2: T[]): boolean => {
       return false
     }
   }
-
   return true
 }

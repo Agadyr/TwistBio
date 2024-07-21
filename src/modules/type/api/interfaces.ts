@@ -15,8 +15,13 @@ export interface Stage {
 }
 
 export interface StageAndStep {
-  stageId: number
-  step: number
+  stageId?: number
+  step?: number
+  name?: string
+  number?: string
+  comment?: string
+  evaluation?: string
+  partners?: number[]
 }
 
 export interface Author {

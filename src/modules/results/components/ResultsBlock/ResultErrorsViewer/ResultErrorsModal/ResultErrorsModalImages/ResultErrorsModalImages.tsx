@@ -3,10 +3,13 @@ import { toast } from 'react-toastify'
 
 import { Box, Typography } from '@mui/material'
 import { useParams } from '@tanstack/react-router'
+import { ImageSection } from 'components/common/ImageSection'
+import { TextErrorSection } from 'components/common/TextErrorSection'
 import { useComparison } from 'modules/comparison/queries'
 import { usePairErrors } from 'modules/results/queries'
 import { useResultErrors } from 'modules/results/store'
 import { useComparisonPagesPairs } from 'modules/setup/queries'
+import { loadAndCropImage } from 'packages/CropImage'
 import { pdfPreviewManager } from 'packages/pdfPreview'
 
 import classes from './ResultErrorsModalImages.module.scss'
@@ -14,39 +17,6 @@ import classes from './ResultErrorsModalImages.module.scss'
 interface ResultErrorsModalProps {
   error: any
 }
-
-const ImageSection: FC<{ title: string; src?: string }> = ({ title, src }) => (
-  <Box>
-    <Typography>{title}</Typography>
-    <Box className={classes.imgWrap}>{src && <img alt={title} className={classes.img} src={src} />}</Box>
-  </Box>
-)
-
-const TextErrorSection: FC<{ content: string[]; bestMatch?: string[] }> = ({ content, bestMatch }) => (
-  <Box className={classes.imgx2}>
-    {content.map((text, index) => (
-      <Box key={index}>
-        <Typography variant="h5">
-          {index + 1}) {text}
-        </Typography>
-        {bestMatch && bestMatch[index] ? (
-          bestMatch[index] === text ? (
-            <Typography style={{ color: 'green' }}>Без Ошибок</Typography>
-          ) : (
-            <div>
-              <Typography variant="h6">Правильно:</Typography>
-              <Typography style={{ color: 'red' }} variant="h6">
-                {bestMatch[index]}
-              </Typography>
-            </div>
-          )
-        ) : (
-          <Typography style={{ color: 'red' }}>Не найдено</Typography>
-        )}
-      </Box>
-    ))}
-  </Box>
-)
 
 export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) => {
   const { comparisonId: stringId } = useParams({ from: '/_comparison/$comparisonId/results' })
@@ -65,41 +35,6 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
   const canvasRef = useRef<HTMLCanvasElement>(null)
 
   console.log(error)
-  const loadAndCropImage = (imgSrc: string, cropRatio: number[], setCroppedImgSrc: (src: string) => void) => {
-    if (cropRatio && cropRatio.length === 4) {
-      const image = new Image()
-      image.crossOrigin = 'Anonymous'
-      image.src = imgSrc
-      image.onload = () => {
-        const canvas = canvasRef.current
-        if (canvas) {
-          const ctx = canvas.getContext('2d')
-          if (ctx) {
-            canvas.width = image.width
-            canvas.height = image.height
-            ctx.drawImage(image, 0, 0)
-
-            const cropX = cropRatio[0] * image.width
-            const cropY = cropRatio[1] * image.height
-            const cropWidth = cropRatio[2] * image.width - cropX
-            const cropHeight = cropRatio[3] * image.height - cropY
-
-            const croppedCanvas = document.createElement('canvas')
-            const croppedCtx = croppedCanvas.getContext('2d')
-            if (croppedCtx) {
-              croppedCanvas.width = cropWidth
-              croppedCanvas.height = cropHeight
-              croppedCtx.drawImage(canvas, cropX, cropY, cropWidth, cropHeight, 0, 0, cropWidth, cropHeight)
-              setCroppedImgSrc(croppedCanvas.toDataURL())
-            }
-          }
-        }
-      }
-      image.onerror = (error1) => {
-        console.error('Failed to load image:', error1)
-      }
-    }
-  }
 
   useEffect(() => {
     if (referencePage?.previewMlCroppedFullUrl && referencePage?.number !== undefined) {
@@ -129,7 +64,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     }
 
     const cropRatio = error.sampleCropRatio || error.referenceCropRatio
-    loadAndCropImage(sampleImgSrc, cropRatio, setCroppedSampleImgSrc)
+    loadAndCropImage(sampleImgSrc, cropRatio, setCroppedSampleImgSrc, canvasRef)
   }, [sampleImgSrc, canvasRef.current, error])
 
   useEffect(() => {
@@ -138,22 +73,22 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     }
 
     const cropRatio = error.sampleCropRatio || error.referenceCropRatio
-    loadAndCropImage(referenceImgSrc, cropRatio, setCroppedReferenceImgSrc)
+    loadAndCropImage(referenceImgSrc, cropRatio, setCroppedReferenceImgSrc, canvasRef)
   }, [referenceImgSrc, canvasRef.current, error])
   useEffect(() => {
     if (!sampleImgSrc || !canvasRef.current || !referenceImgSrc) {
       return
     }
     if ((error.type.name === 'Штрихкод' || error.type.name === 'Баркод') && pairErrors?.maskFullUrl) {
-      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedSampleImgSrc)
-      loadAndCropImage(referenceImgSrc, error.barcodeCropRatio, setCroppedReferenceImgSrc)
-      loadAndCropImage(pairErrors?.maskFullUrl, error.barcodeCropRatio, setCroppedMaskSrc)
+      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedSampleImgSrc, canvasRef)
+      loadAndCropImage(referenceImgSrc, error.barcodeCropRatio, setCroppedReferenceImgSrc, canvasRef)
+      loadAndCropImage(pairErrors?.maskFullUrl, error.barcodeCropRatio, setCroppedMaskSrc, canvasRef)
     }
   }, [sampleImgSrc, canvasRef.current, error, pairErrors, referenceImgSrc])
 
   useEffect(() => {
     if (pairErrors && pairErrors?.maskFullUrl && canvasRef.current) {
-      loadAndCropImage(pairErrors?.maskFullUrl, error.sampleCropRatio, setCroppedMaskSrc)
+      loadAndCropImage(pairErrors?.maskFullUrl, error.sampleCropRatio, setCroppedMaskSrc, canvasRef)
     }
   }, [
     pairErrors?.maskFullUrl,

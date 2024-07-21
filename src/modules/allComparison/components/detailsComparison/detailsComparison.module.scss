@@ -1,0 +1,29 @@
+@import 'src/assets/scss/vars';
+
+.icons svg {
+  margin-right: 10px;
+  color: #676666;
+  font-size: 22px;
+  cursor: pointer;
+}
+
+.h1 {
+  margin: 20px 0 !important;
+}
+
+.h2 {
+  margin-bottom: 5px !important;
+  font-weight: bold;
+  font-size: 19px;
+}
+
+.h3 {
+  margin: 40px 0 20px !important;
+  font-size: 30px !important;
+  text-align: center;
+}
+
+.body2 {
+  padding: 3px 0;
+  font-size: 17px !important;
+}

@@ -18,11 +18,10 @@ interface Props {
 
 export const ResultErrorFrames: FC<Props> = ({ imageRef, fontSize, top }) => {
   const { comparisonId } = useParams({ from: '/_comparison/$comparisonId/results' })
-  const { selectedError, setSelectedError, clearErrorSelection, selectedPair, hoveredError } = useResultErrors()
+  const { selectedError, setSelectedError, selectedPair, hoveredError } = useResultErrors()
   const { pairErrors } = usePairErrors(Number(comparisonId), selectedPair as number)
   const [style, setStyle] = useState({})
   const ref = useRef<HTMLDivElement>(null)
-  useClickAway(clearErrorSelection, [ref])
   const update = () => {
     const rect = imageRef.current?.getBoundingClientRect()
     if (rect) {

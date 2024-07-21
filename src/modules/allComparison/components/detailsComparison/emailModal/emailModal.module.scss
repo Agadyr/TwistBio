@@ -1,0 +1,33 @@
+@import 'src/assets/scss/vars';
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  justify-content: center;
+  width: 450px;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 6px;
+
+  button,
+  input {
+    box-sizing: border-box;
+    width: 100% !important;
+    min-width: 100%;
+  }
+
+  button {
+    color: #fff;
+  }
+
+  input {
+    padding: 30px 10px !important;
+  }
+}
+
+.emailError {
+  color: tomato;
+  font-size: 14px;
+  text-align: left;
+}

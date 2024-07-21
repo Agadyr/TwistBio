@@ -18,6 +18,7 @@ import { Route as IndexImport } from './routes/index'
 
 // Create Virtual Routes
 
+const CompIdAboutLazyImport = createFileRoute('/$compId/about')()
 const ComparisonComparisonIdTypeLazyImport = createFileRoute(
   '/_comparison/$comparisonId/type',
 )()
@@ -33,6 +34,15 @@ const ComparisonComparisonIdReceiveResultsLazyImport = createFileRoute(
 const ComparisonComparisonIdConclusionLazyImport = createFileRoute(
   '/_comparison/$comparisonId/conclusion',
 )()
+const AboutComparisonIdAboutComparisonLazyImport = createFileRoute(
+  '/_aboutComparison/$id/aboutComparison',
+)()
+const AboutComparisonComparisonIdAboutcomparisonLazyImport = createFileRoute(
+  '/_aboutComparison/$comparisonId/aboutcomparison',
+)()
+const AboutComparisonComparisonIdAboutComparisonLazyImport = createFileRoute(
+  '/_aboutComparison/$comparisonId/about-comparison',
+)()
 
 // Create/Update Routes
 
@@ -45,6 +55,11 @@ const IndexRoute = IndexImport.update({
   path: '/',
   getParentRoute: () => rootRoute,
 } as any)
+
+const CompIdAboutLazyRoute = CompIdAboutLazyImport.update({
+  path: '/$compId/about',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/$compId.about.lazy').then((d) => d.Route))
 
 const ComparisonComparisonIdTypeLazyRoute =
   ComparisonComparisonIdTypeLazyImport.update({
@@ -94,6 +109,36 @@ const ComparisonComparisonIdConclusionLazyRoute =
     ),
   )
 
+const AboutComparisonIdAboutComparisonLazyRoute =
+  AboutComparisonIdAboutComparisonLazyImport.update({
+    path: '/$id/aboutComparison',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/_aboutComparison/$id.aboutComparison.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AboutComparisonComparisonIdAboutcomparisonLazyRoute =
+  AboutComparisonComparisonIdAboutcomparisonLazyImport.update({
+    path: '/$comparisonId/aboutcomparison',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import('./routes/_aboutComparison/$comparisonId.aboutcomparison.lazy').then(
+      (d) => d.Route,
+    ),
+  )
+
+const AboutComparisonComparisonIdAboutComparisonLazyRoute =
+  AboutComparisonComparisonIdAboutComparisonLazyImport.update({
+    path: '/$comparisonId/about-comparison',
+    getParentRoute: () => rootRoute,
+  } as any).lazy(() =>
+    import(
+      './routes/_aboutComparison/$comparisonId.about-comparison.lazy'
+    ).then((d) => d.Route),
+  )
+
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
@@ -104,6 +149,22 @@ declare module '@tanstack/react-router' {
     }
     '/_comparison': {
       preLoaderRoute: typeof ComparisonImport
+      parentRoute: typeof rootRoute
+    }
+    '/$compId/about': {
+      preLoaderRoute: typeof CompIdAboutLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/_aboutComparison/$comparisonId/about-comparison': {
+      preLoaderRoute: typeof AboutComparisonComparisonIdAboutComparisonLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/_aboutComparison/$comparisonId/aboutcomparison': {
+      preLoaderRoute: typeof AboutComparisonComparisonIdAboutcomparisonLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/_aboutComparison/$id/aboutComparison': {
+      preLoaderRoute: typeof AboutComparisonIdAboutComparisonLazyImport
       parentRoute: typeof rootRoute
     }
     '/_comparison/$comparisonId/conclusion': {
@@ -140,6 +201,10 @@ export const routeTree = rootRoute.addChildren([
     ComparisonComparisonIdSetupLazyRoute,
     ComparisonComparisonIdTypeLazyRoute,
   ]),
+  CompIdAboutLazyRoute,
+  AboutComparisonComparisonIdAboutComparisonLazyRoute,
+  AboutComparisonComparisonIdAboutcomparisonLazyRoute,
+  AboutComparisonIdAboutComparisonLazyRoute,
 ])
 
 /* prettier-ignore-end */

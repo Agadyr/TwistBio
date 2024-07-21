@@ -1,4 +1,3 @@
-import { alpha } from '@mui/material'
 import * as pdfjsLib from 'pdfjs-dist'
 import { PDFDocumentProxy, RenderParameters } from 'pdfjs-dist/types/src/display/api'
 

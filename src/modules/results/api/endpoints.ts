@@ -1,6 +1,6 @@
 import {
-  FourParamEndpointConstructor,
   NoParamEndpointConstructor,
+  OneParamEndpointConstructor,
   ThreeParamEndpointConstructor,
   TwoParamEndpointConstructor,
 } from 'interfaces/api.interfaces'
@@ -13,7 +13,12 @@ interface ComparisonErrorEndpoints {
   errorDetail: ThreeParamEndpointConstructor
   updateError: ThreeParamEndpointConstructor
 }
-
+interface ComparisonReportEndpoint {
+  postComparisonReport: OneParamEndpointConstructor
+}
+export const postComparisonReportEndpoint: ComparisonReportEndpoint = {
+  postComparisonReport: (comparisonId) => `/comparisons/${comparisonId}/create_report`,
+}
 export const comparisonErrorEndpoints: ComparisonErrorEndpoints = {
   severities: () => '/comparisons/error-severities',
   statuses: () => '/comparisons/error-statuses',

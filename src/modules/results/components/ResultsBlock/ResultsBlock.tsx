@@ -9,6 +9,7 @@ import { commonHeaders } from 'components/common/Header/constants/comparisonStep
 import { TypeofComparison } from 'interfaces/common.interfaces'
 import { useComparison } from 'modules/comparison/queries'
 import { usePairErrors } from 'modules/results/queries'
+import { useComparisonReport } from 'modules/results/queries/useComparisonReport'
 import { useResultErrors } from 'modules/results/store'
 
 import { ResultErrorsViewer } from './ResultErrorsViewer'
@@ -18,17 +19,19 @@ import { ResultPreviews } from './ResultPreviews'
 import classes from './ResultsBlock.module.scss'
 
 export const ResultsBlock = () => {
+  const [clickToReport, setclickToReport] = useState(false)
+  const [openModal, setOpenModal] = useState(false)
+  const [openModalCard, setOpenModalCard] = useState(false)
+  const [filter, onFilter] = useState(false)
   const params = useParams({ from: '/_comparison/$comparisonId/results' })
   const { comparison } = useComparison(Number(params.comparisonId))
   const { comparisonId } = useParams({ from: '/_comparison/$comparisonId/results' })
   const selectedPair = useResultErrors((state) => state.selectedPair)
-  const { pairErrors, pairErrorsAreLoading } = usePairErrors(Number(comparisonId), selectedPair as number)
+  const { pairErrors } = usePairErrors(Number(comparisonId), selectedPair as number)
+  const { comparisonReport } = useComparisonReport(clickToReport ? Number(params.comparisonId) : 0)
   const isTextComparison = comparison?.stage.comparisonType === TypeofComparison.Text
   const header = isTextComparison ? 'Анализ результатов потекстового сравнения' : commonHeaders[ComparisonStep.Results]
   useHeader(ComparisonStep.Results, header)
-  const [openModal, setOpenModal] = useState(false)
-  const [openModalCard, setOpenModalCard] = useState(false)
-  const [filter, onFilter] = useState(false)
   const onChange = (obj: any) => {
     if (obj === true) {
       onFilter(true)
@@ -89,7 +92,7 @@ export const ResultsBlock = () => {
             Назад
           </Link>
         </Button>
-        <Button variant="outlined">
+        <Button onClick={() => setclickToReport(true)} variant="outlined">
           <Link params={params} to="/$comparisonId/conclusion">
             Перейти к заключению
           </Link>

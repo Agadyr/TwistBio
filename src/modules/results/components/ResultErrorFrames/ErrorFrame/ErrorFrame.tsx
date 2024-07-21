@@ -21,7 +21,6 @@ export const ErrorFrame: FC<Props> = ({ cropRatio, errorNum, onClick, active, ho
     return null
   }
   const style = getFramePosition(cropRatio)
-  console.log(newTop)
   return (
     <div
       className={cx(classes.errorFrame, { [classes.active]: active, [classes.hovered]: hovered })}

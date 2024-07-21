@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 
-import { Box, CircularProgress } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import { useParams } from '@tanstack/react-router'
 import cx from 'clsx'
 import { usePairErrors } from 'modules/results/queries'
@@ -19,18 +19,19 @@ export const ResultErrorsViewer = () => {
   const selectedPair = useResultErrors((state) => state.selectedPair)
   const { pairErrors, pairErrorsAreLoading } = usePairErrors(Number(comparisonId), selectedPair as number)
   const selectedError = useResultErrors((state) => state.selectedError)
+  const setCropRatio = useResultErrors((state) => state.setCropRatio)
   const setHoveredError = useResultErrors((state) => state.setHoveredError)
   const { pairErrors: newErrors } = usefilterPairErrors((state) => ({
     pairErrors: state.pairErrors,
   }))
 
   useEffect(() => {
-    if (selectedError) {
-      console.log(selectedError, 'selectedError')
-      itemRefs.current[selectedError].scrollIntoView({ block: 'center', behavior: 'smooth' })
+    if (selectedError && itemRefs.current[selectedError]) {
+      setTimeout(() => {
+        itemRefs.current[selectedError].scrollIntoView({ block: 'center', behavior: 'smooth' })
+      }, 100)
     }
   }, [selectedError])
-
   if (pairErrorsAreLoading) {
     return (
       <Box className={classes.center}>
@@ -56,7 +57,15 @@ export const ResultErrorsViewer = () => {
       setErrorId(errorId + 1)
     }
   }
-
+  const handleClick = (pairError: any) => {
+    if (pairError.referenceCropRatio || pairError.sampleCropRatio) {
+      setCropRatio(pairError.referenceCropRatio)
+    } else if (pairError.barcodeCropRatio) {
+      setCropRatio(pairError.barcodeCropRatio)
+    } else {
+      setCropRatio(pairError.imageCropRatio)
+    }
+  }
   return (
     <>
       <Box className={classes.errors}>
@@ -77,6 +86,18 @@ export const ResultErrorsViewer = () => {
             <span>Тип: {pairError.type?.name}</span>
             <span>{`Критичность: ${pairError.severity?.name || 'неизвестно'}`}</span>
             <span>Комментарий: {pairError.comment}</span>
+            <Box className={classes.last}>
+              <Button
+                className="btn btn-purple"
+                onClick={(e) => {
+                  e.stopPropagation()
+                  handleClick(pairError)
+                }}
+                variant="outlined"
+              >
+                Zoom
+              </Button>
+            </Box>
           </Box>
         ))}
       </Box>
