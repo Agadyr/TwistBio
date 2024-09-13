@@ -17,14 +17,15 @@ interface SetupSelectionAreaProps {
 export const SetupSelectionArea: FC<SetupSelectionAreaProps> = ({ isReference, comparisonId }) => {
   const { filesPages } = useComparisonFilesPages(comparisonId, isReference)
   const pages = filesPages?.items || []
+  const imageUrl = filesPages?.imageUrl || undefined
   return (
-    <Box width="100%">
+    <Box height="100%" width="100%">
       <Box className={classes.area}>
         <Typography className={cx(classes.areaName, { [classes.right]: isReference })}>
           {isReference ? 'Эталон' : 'Образец'}
         </Typography>
         <SetupPagesViewer filesPages={pages} isReference={isReference} />
-        <SetupPageViewer filesPages={pages} isReference={isReference} />
+        <SetupPageViewer filesPages={pages} imageUrl={imageUrl} isReference={isReference} />
       </Box>
 
       <Box alignItems="center" display="flex" justifyContent="space-between">

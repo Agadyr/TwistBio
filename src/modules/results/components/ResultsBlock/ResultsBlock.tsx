@@ -19,7 +19,7 @@ import { ResultPreviews } from './ResultPreviews'
 import classes from './ResultsBlock.module.scss'
 
 export const ResultsBlock = () => {
-  const [clickToReport, setclickToReport] = useState(false)
+  const [clickToReport, setClickToReport] = useState(false)
   const [openModal, setOpenModal] = useState(false)
   const [openModalCard, setOpenModalCard] = useState(false)
   const [filter, onFilter] = useState(false)
@@ -92,10 +92,11 @@ export const ResultsBlock = () => {
             Назад
           </Link>
         </Button>
-        <Button onClick={() => setclickToReport(true)} variant="outlined">
-          <Link params={params} to="/$comparisonId/conclusion">
+        <Button onClick={() => setClickToReport(true)} variant="outlined">
+          <Link params={params}> Перейти к заключению </Link>
+          {/* <Link params={params} to="/$comparisonId/conclusion">
             Перейти к заключению
-          </Link>
+          </Link> */}
         </Button>
       </Box>
     </>

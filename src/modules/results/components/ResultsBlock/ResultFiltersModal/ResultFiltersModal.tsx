@@ -135,7 +135,6 @@ export const ResultFiltersModal: FC<ResultFiltersProps> = ({ openModal, setOpenM
     setOpenModal(false)
   }
   const onError = () => toast.error('Что то пошло не так, попробуйте еще раз.')
-
   return (
     <Modal onClose={() => setOpenModal(false)} open={openModal}>
       <Box className={classes.modal}>

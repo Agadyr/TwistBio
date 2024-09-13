@@ -5,16 +5,18 @@ import { create } from 'zustand'
 interface PackageState {
   data: any
   dataSample: any
-  isClickToContur: boolean
+  isLoading: boolean
+  isLoadingSample: boolean
   norm_box_coordinates: number[]
   fetchPage: (file: File, stage: any, isReference?: boolean) => Promise<void>
-  toChangetoTrue: () => void
+  setIsLoading: (isLoading: boolean, isReference?: boolean) => void
 }
 
 export const getPackage = create<PackageState>((set) => ({
   data: [0, 0, 0, 0],
   dataSample: [0, 0, 0, 0],
-  isClickToContur: false,
+  isLoading: false,
+  isLoadingSample: false,
   norm_box_coordinates: [0, 0, 0, 0],
   fetchPage: async (file: File, stage: any, isReference?: boolean) => {
     const form = new FormData()
@@ -27,14 +29,22 @@ export const getPackage = create<PackageState>((set) => ({
       const transformedData = transformCoordinates(res.data.norm_box_coordinates)
       if (isReference) {
         set({ data: transformedData })
+        set({ isLoading: false })
       } else {
         set({ dataSample: transformedData })
+        set({ isLoadingSample: false })
       }
     } catch (error) {
+      set({ isLoading: false })
+      set({ isLoadingSample: false })
       console.error('Error fetching comparisons:', error)
     }
   },
-  toChangetoTrue: () => {
-    set({ isClickToContur: true })
+  setIsLoading: (isLoading: boolean, isReference?: boolean) => {
+    if (isReference) {
+      set({ isLoading })
+    } else {
+      set({ isLoadingSample: isLoading })
+    }
   },
 }))

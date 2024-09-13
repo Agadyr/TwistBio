@@ -13,17 +13,19 @@ export interface ComparisonPairError {
   severity: ComparisonError | null
   status: ComparisonError | null
   comment: string | null
-  reference_crop_ratio: CropRatio | null
-  referenceCropRatio?: CropRatio | null
-  sample_crop_ratio: CropRatio | null
-  sampleCropRatio?: CropRatio | null
+  referenceInbox: CropRatio[] | null
+  sampleInbox: CropRatio[] | null
+  reference_crop_ratio: CropRatio[] | null
+  referenceCropRatio?: CropRatio[] | null
+  sample_crop_ratio: CropRatio[] | null
+  sampleCropRatio?: CropRatio[] | null
   barcode_crop_ratio: CropRatio | null
   barcodeCropRatio?: CropRatio | null
   content: string[] | null
   bestMatch: Array<string | null> | null
   detectedValue: string | null
   imageFullUrl: string | null
-  imageCropRatio: CropRatio | null
+  imageCropRatio: CropRatio[] | null
 }
 
 export interface ComparisonPairErrors {

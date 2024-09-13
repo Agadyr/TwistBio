@@ -2,7 +2,7 @@ import { FC, useEffect, useRef, useState } from 'react'
 import { toast } from 'react-toastify'
 import { TransformComponent, TransformWrapper } from 'react-zoom-pan-pinch'
 
-import { Box, Button } from '@mui/material'
+import { Box, Button, CircularProgress } from '@mui/material'
 import { useParams } from '@tanstack/react-router'
 import cx from 'clsx'
 import { FilePreview } from 'components/common/FilePreview'
@@ -20,19 +20,27 @@ import { getPackage } from './store'
 interface Props {
   isReference?: boolean
   filesPages: ComparisonOutlineResponse[]
+  imageUrl?: Array<string>
 }
 
-export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
+export const SetupPageViewer: FC<Props> = ({ isReference, filesPages, imageUrl }) => {
   const containerRef = useRef<HTMLDivElement>(null)
   const [imgSrc, setImgSrc] = useState<string | undefined>(undefined)
+  const [imgFullSrc, setFullImgSrc] = useState<string | undefined>(undefined)
   const [file, setFile] = useState<File | undefined>(undefined)
   const areaType = isReference ? 'reference' : 'sample'
   const activePageId = useSelectedPages((state) => state.activePageIndex[areaType])
-  const { fetchPage, normBoxCoordinates, dataSample } = getPackage((state) => ({
-    fetchPage: state.fetchPage,
-    normBoxCoordinates: state.data,
-    dataSample: state.dataSample,
-  }))
+  const selectedIndex = useSelectedPages((state) => state.selectedIndex)
+  const { fetchPage, normBoxCoordinates, dataSample, setIsLoading, isLoading, isLoadingSample } = getPackage(
+    (state) => ({
+      fetchPage: state.fetchPage,
+      normBoxCoordinates: state.data,
+      dataSample: state.dataSample,
+      setIsLoading: state.setIsLoading,
+      isLoading: state.isLoading,
+      isLoadingSample: state.isLoadingSample,
+    }),
+  )
 
   const setPageFrame = useSelectedPages((state) =>
     isReference ? state.setReferencePageFrame : state.setSamplePageFrame,
@@ -53,6 +61,11 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
   const [withFrame, setWithFrame] = useState(true)
 
   useEffect(() => {
+    if (imageUrl?.length && selectedIndex !== null) {
+      setFullImgSrc(imageUrl[selectedIndex])
+    }
+  }, [imageUrl, selectedIndex])
+  useEffect(() => {
     if (!isReference || isComparisonLoading || !comparison?.stage.name) {
       return
     }
@@ -71,16 +84,18 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
   }, [activePage, isReference])
 
   const toFile = async () => {
+    setIsLoading(true, isReference)
     if (imgSrc) {
       try {
         const response = await fetch(imgSrc)
         const blob = await response.blob()
         const newfile = new File([blob], 'file.png', { type: blob.type })
-        setFile((prevfile) => {
+        setFile(() => {
           console.log(newfile)
           return newfile
         })
       } catch (error) {
+        setIsLoading(false, isReference)
         console.error('Error converting image to file:', error)
       }
     }
@@ -93,19 +108,22 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
   }, [file, fetchPage, comparison?.stage.id])
 
   const contentStyle = {
-    width: '100%',
-    height: '100%',
     display: 'flex',
     justifyContent: 'center',
+    width: '100% !important',
+    height: imageUrl ? 'auto' : '100%',
   }
+  console.log(isLoading)
   return (
     <Box className={cx(classes.preview, { [classes.right]: !isReference })}>
       {activePage && (
         <>
           {!isReference && (
             <Button
-              className={`${classes.buttons} btn btn-purple
-               ${comparison?.stage.comparisonType === 'текстовое сравнение' ? classes.buttons : classes.dp}`}
+              className={`${classes.buttons}
+               ${comparison?.stage.comparisonType === 'текстовое сравнение' ? classes.buttons : classes.dp}
+               ${isLoading ? 'btn-purple-disabled' : 'btn btn-purple'}`}
+              disabled={isLoading}
               onClick={toFile}
               size="small"
               variant="contained"
@@ -114,42 +132,87 @@ export const SetupPageViewer: FC<Props> = ({ isReference, filesPages }) => {
             </Button>
           )}
           {comparison?.stage.comparisonType !== 'текстовое сравнение' && (
-            <Button className={`${classes.buttons} btn btn-purple`} onClick={toFile} size="small" variant="contained">
-              Выделить контур
-            </Button>
+            <>
+              {isReference && (
+                <Button
+                  className={`${classes.buttons} ${isLoading ? 'btn-purple-disabled' : 'btn btn-purple'}`}
+                  disabled={isLoading}
+                  onClick={toFile}
+                  size="small"
+                  variant="contained"
+                >
+                  Выделить контур
+                </Button>
+              )}
+              {!isReference && (
+                <Button
+                  className={`${classes.buttons} ${isLoadingSample ? 'btn-purple-disabled' : 'btn btn-purple'}`}
+                  disabled={isLoadingSample}
+                  onClick={toFile}
+                  size="small"
+                  variant="contained"
+                >
+                  Выделить контур
+                </Button>
+              )}
+            </>
           )}
           <TransformWrapper panning={{ lockAxisX: true, lockAxisY: true }}>
             <TransformComponent contentStyle={contentStyle}>
-              <div className={classes.previewContainer}>
-                <div className={classes.innerContainer} ref={containerRef}>
-                  <FilePreview
-                    className={cx(classes.previewImg, { [classes.removed]: isRemovedPage })}
-                    fileUrl={activePage.previewFullUrl}
-                    pageNum={activePage.number}
-                  />
-                </div>
-
-                {withFrame && isReference && (
-                  <Frame
-                    cropRatio={normBoxCoordinates || pageFrame}
-                    onFrameChange={(cropRatio) => {
-                      setPageFrame(activePageId, cropRatio)
-                    }}
-                    refContainer={containerRef}
-                    resizeable
-                    scale={1}
-                  />
-                )}
-                {withFrame && !isReference && (
-                  <Frame
-                    cropRatio={dataSample || pageFrame}
-                    onFrameChange={(cropRatio) => {
-                      setPageFrame(activePageId, cropRatio)
-                    }}
-                    refContainer={containerRef}
-                    resizeable
-                    scale={1}
-                  />
+              <div className={imgFullSrc ? classes.previewContainer : classes.previewContainer2}>
+                {isReference ? (
+                  isLoading ? (
+                    <CircularProgress />
+                  ) : (
+                    <>
+                      <div className={classes.innerContainer} ref={containerRef}>
+                        {comparison?.stage.comparisonType !== 'текстовое сравнение' && (
+                          <FilePreview
+                            className={cx(classes.previewImg, { [classes.removed]: isRemovedPage })}
+                            fileUrl={activePage.previewFullUrl}
+                            pageNum={activePage.number}
+                          />
+                        )}
+                        {imageUrl !== undefined && (
+                          <FilePreview
+                            className={cx(classes.previewImg2, { [classes.removed]: isRemovedPage })}
+                            fileUrl={imgFullSrc || ''}
+                            pageNum={activePage.number}
+                          />
+                        )}
+                      </div>
+                      {withFrame && (
+                        <Frame
+                          cropRatio={normBoxCoordinates || pageFrame}
+                          onFrameChange={(cropRatio) => setPageFrame(activePageId, cropRatio)}
+                          refContainer={containerRef}
+                          resizeable
+                          scale={1}
+                        />
+                      )}
+                    </>
+                  )
+                ) : isLoadingSample ? (
+                  <CircularProgress />
+                ) : (
+                  <>
+                    <div className={classes.innerContainer} ref={containerRef}>
+                      <FilePreview
+                        className={cx(classes.previewImg, { [classes.removed]: isRemovedPage })}
+                        fileUrl={activePage.previewFullUrl}
+                        pageNum={activePage.number}
+                      />
+                    </div>
+                    {withFrame && (
+                      <Frame
+                        cropRatio={dataSample || pageFrame}
+                        onFrameChange={(cropRatio) => setPageFrame(activePageId, cropRatio)}
+                        refContainer={containerRef}
+                        resizeable
+                        scale={1}
+                      />
+                    )}
+                  </>
                 )}
               </div>
             </TransformComponent>

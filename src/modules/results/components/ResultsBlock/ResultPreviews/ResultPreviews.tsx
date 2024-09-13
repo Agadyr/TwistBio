@@ -7,131 +7,156 @@ import { FilePreview } from 'components/common/FilePreview'
 import { TypeofComparison } from 'interfaces/common.interfaces'
 import { useComparison } from 'modules/comparison/queries'
 import { ResultErrorFrames } from 'modules/results/components/ResultErrorFrames'
+import { handleZoom } from 'modules/results/helpers/ZoomHandlers'
 import { usePairErrors } from 'modules/results/queries'
 import { useResultErrors } from 'modules/results/store'
+import { useComparisonFilesPages } from 'modules/setup/queries/useComparisonFilesPages'
 import { useComparisonPagesPairs } from 'modules/setup/queries/useComparisonPagesPairs'
+import { useSelectedPages } from 'modules/setup/store'
 
 import classes from './ResultPreviews.module.scss'
+import { ResultPreviewsButtons } from './ResultPreviewsButtons'
 
 export const ResultPreviews = () => {
   const { comparisonId: stringId } = useParams({ from: '/_comparison/$comparisonId/results' })
   const comparisonId = Number(stringId)
   const { comparison } = useComparison(comparisonId)
-  const imageRef = useRef<HTMLImageElement>(null)
-  const imageReRef = useRef<HTMLImageElement>(null)
+  const referenceRef = useRef<HTMLImageElement>(null)
+  const sampleRef = useRef<HTMLImageElement>(null)
+  const firstReferenceRef = useRef<HTMLImageElement | null>(null)
+  const firstSampleRef = useRef<HTMLImageElement | null>(null)
+  const transformReferenceRef = useRef<ReactZoomPanPinchRef | null>(null)
+  const transformSampleRef = useRef<ReactZoomPanPinchRef | null>(null)
   const isTextComparison = comparison?.stage.comparisonType === TypeofComparison.Text
   const { selectedPair } = useResultErrors()
+  const selectedIndex = useSelectedPages((state) => state.selectedIndex)
+  const idOfError = useResultErrors((state) => state.idOfError)
   const { pairErrors, pairErrorsAreLoading } = usePairErrors(Number(comparisonId), selectedPair as number)
   const { comparisonPagesPairs } = useComparisonPagesPairs(comparisonId)
-  const selectedCropRatio = useResultErrors((state) => state.selectedCropRatio)
-
+  const { filesPages } = useComparisonFilesPages(comparisonId, true)
+  const imageUrl = filesPages?.imageUrl || ''
   const pagePair = comparisonPagesPairs?.find((comparisonPagesPair) => comparisonPagesPair.id === selectedPair)
   const { referencePage, samplePage } = pagePair || {}
 
-  const contentStyle = {
-    width: '100%',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-  }
   const [openModalMask, setOpenModalMask] = useState(false)
   const [openModalContur, setOpenModalContur] = useState(false)
   const [openModalEtalon, setOpenModalEtalon] = useState(true)
 
-  const [fontSize, setFontSize] = useState<string>('16px')
-  const [margintop, setmarginTop] = useState<string>('-20px')
+  const [fontSizeReference, setFontSizeReference] = useState<string>('16px')
+  const [marginTopReference, setMarginTopReference] = useState<string>('-20px')
+  const [fontSizeSample, setFontSizeSample] = useState<string>('16px')
+  const [marginTopSample, setMarginTopSample] = useState<string>('-20px')
 
-  const handleZoom = (ref: any, event: any) => {
-    const { scale } = ref.state
-    if (scale >= 3) {
-      setFontSize('4px')
-      setmarginTop('-10px')
-    } else if (scale >= 2.5) {
-      setFontSize('6px')
-      setmarginTop('-15px')
-    } else if (scale >= 2) {
-      setFontSize('8px')
-    } else if (scale >= 1) {
-      setFontSize('12px')
-    } else if (scale <= 2) {
-      setFontSize('16px')
-    }
+  const contentStyle = {
+    width: '100%',
+    height: imageUrl ? 'auto' : '100%',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
   }
-  console.log(selectedCropRatio)
+
+  useEffect(() => {
+    if (!firstReferenceRef.current && referenceRef.current) {
+      firstReferenceRef.current = referenceRef.current
+    }
+    if (!firstSampleRef.current && sampleRef.current) {
+      firstSampleRef.current = sampleRef.current
+    }
+  }, [referenceRef, sampleRef])
+
+  useEffect(() => {
+    if (transformReferenceRef.current && idOfError) {
+      transformReferenceRef.current.zoomToElement(`ReferenceError${idOfError}`)
+      setFontSizeReference('4px')
+      setMarginTopReference('-10px')
+    }
+    if (transformSampleRef.current && idOfError) {
+      transformSampleRef.current.zoomToElement(`SampleError${idOfError}`)
+      setFontSizeSample('4px')
+      setMarginTopSample('-10px')
+    }
+  }, [idOfError, transformReferenceRef, transformSampleRef])
+
   return (
     <Box className={classes.viewBlock}>
       <Box className={classes.viewItem}>
-        <span
-          className={classes.itemLabel}
-          onClick={() => {
-            setOpenModalEtalon(true)
-            setOpenModalContur(false)
-            setOpenModalMask(false)
-          }}
+        <ResultPreviewsButtons
+          comparisonType={comparison?.stage.comparisonType}
+          openModalContur={openModalContur}
+          openModalEtalon={openModalEtalon}
+          openModalMask={openModalMask}
+          setOpenModalContur={setOpenModalContur}
+          setOpenModalEtalon={setOpenModalEtalon}
+          setOpenModalMask={setOpenModalMask}
+        />
+        <TransformWrapper
+          limitToBounds={false}
+          onZoom={(ref) =>
+            handleZoom(ref, true, {
+              setFontSizeReference,
+              setMarginTopReference,
+              setFontSizeSample,
+              setMarginTopSample,
+            })
+          }
+          ref={transformReferenceRef}
         >
-          Эталон
-        </span>
-        {comparison?.stage.comparisonType !== 'текстовое сравнение' && (
-          <button
-            className={`btn btngray ${classes.itemLabel2}`}
-            onClick={() => {
-              setOpenModalMask(true)
-              setOpenModalEtalon(false)
-              setOpenModalContur(false)
-            }}
-          >
-            Маска
-          </button>
-        )}
-        {comparison?.stage.comparisonType !== 'текстовое сравнение' && (
-          <button
-            className={`btn btngray ${classes.itemLabel3}`}
-            onClick={() => {
-              setOpenModalContur(true)
-              setOpenModalEtalon(false)
-              setOpenModalMask(false)
-            }}
-          >
-            Маска контуров
-          </button>
-        )}
-        <TransformWrapper onZoom={handleZoom}>
           <TransformComponent contentStyle={contentStyle}>
-            <div className={classes.df}>
-              {openModalMask && !openModalEtalon && !openModalContur && (
-                <img
-                  alt="sdf"
-                  className={classes.img}
-                  src={pairErrors?.maskFullUrl ? pairErrors?.maskFullUrl : '/images/red1.png'}
+            {openModalMask && !openModalEtalon && !openModalContur && (
+              <div className={classes.referenceWrapContainer}>
+                <FilePreview
+                  fileUrl={pairErrors?.maskFullUrl ? pairErrors?.maskFullUrl : '/images/red1.png'}
+                  pageNum={1}
                 />
-              )}
-              {!!referencePage && openModalEtalon && !openModalContur && !openModalMask && (
-                <>
-                  <div className={classes.referenceWrapContainer}>
+              </div>
+            )}
+            {!!referencePage && openModalEtalon && !openModalContur && !openModalMask && (
+              <>
+                <div className={classes.referenceWrapContainer}>
+                  {!imageUrl && (
                     <FilePreview
                       fileUrl={isTextComparison ? referencePage.previewFullUrl : referencePage.previewMlCroppedFullUrl}
                       pageNum={referencePage.number}
-                      ref={imageReRef}
+                      ref={referenceRef}
                     />
-                    <ResultErrorFrames fontSize={fontSize} imageRef={imageReRef} top={margintop} />
-                  </div>
-                </>
-              )}
-              {openModalContur && !openModalEtalon && !openModalMask && (
-                <img
-                  alt="sdf"
-                  className={classes.img}
-                  src={pairErrors?.outlineMaskFullUrl ? pairErrors?.outlineMaskFullUrl : ' /images/black1.png '}
+                  )}
+                  {imageUrl && imageUrl !== null && (
+                    <FilePreview fileUrl={imageUrl[selectedIndex || 0] || ''} pageNum={1} ref={referenceRef} />
+                  )}
+                  <ResultErrorFrames
+                    fontSize={fontSizeReference}
+                    imageRef={firstReferenceRef}
+                    isReference
+                    top={marginTopReference}
+                  />
+                </div>
+              </>
+            )}
+            {openModalContur && !openModalEtalon && !openModalMask && (
+              <div className={classes.referenceWrapContainer}>
+                <FilePreview
+                  fileUrl={pairErrors?.outlineMaskFullUrl ? pairErrors?.outlineMaskFullUrl : ' /images/black1.png '}
+                  pageNum={2}
                 />
-              )}
-            </div>
+              </div>
+            )}
           </TransformComponent>
         </TransformWrapper>
       </Box>
 
       <Box className={classes.viewItem}>
         <span className={classes.itemLabel}>Образец</span>
-        <TransformWrapper onZoom={handleZoom}>
+        <TransformWrapper
+          onZoom={(ref) =>
+            handleZoom(ref, false, {
+              setFontSizeReference,
+              setMarginTopReference,
+              setFontSizeSample,
+              setMarginTopSample,
+            })
+          }
+          ref={transformSampleRef}
+        >
           <TransformComponent contentStyle={contentStyle}>
             {!!samplePage && (
               <>
@@ -139,9 +164,14 @@ export const ResultPreviews = () => {
                   <FilePreview
                     fileUrl={isTextComparison ? samplePage.previewFullUrl : samplePage.previewMlCroppedFullUrl}
                     pageNum={samplePage.number}
-                    ref={imageRef}
+                    ref={sampleRef}
                   />
-                  <ResultErrorFrames fontSize={fontSize} imageRef={imageRef} top={margintop} />
+                  <ResultErrorFrames
+                    fontSize={fontSizeSample}
+                    imageRef={firstSampleRef}
+                    isReference={false}
+                    top={marginTopSample}
+                  />
                 </div>
               </>
             )}

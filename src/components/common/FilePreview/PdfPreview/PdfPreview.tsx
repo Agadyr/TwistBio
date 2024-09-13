@@ -18,7 +18,6 @@ interface Props {
 // Она булет возможно будет использоваться в других компонентах
 export const PdfPreview = forwardRef<HTMLImageElement, Props>(({ fileUrl, pageNum, className, children }, ref) => {
   const [imgSrc, setImgSrc] = useState('')
-
   useEffect(() => {
     pdfPreviewManager
       .getPreview(fileUrl, pageNum)

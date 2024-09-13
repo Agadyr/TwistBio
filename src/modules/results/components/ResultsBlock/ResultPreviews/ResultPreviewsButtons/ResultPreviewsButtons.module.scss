@@ -1,0 +1,42 @@
+@import 'src/assets/scss/vars';
+
+.boxButtons {
+  position: absolute;
+  top: 30px;
+}
+
+.itemLabel,
+.itemLabel2,
+.itemLabel3 {
+  position: absolute;
+  top: 0;
+  z-index: 2;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.itemLabel {
+  left: 0;
+}
+
+.itemLabel2 {
+  left: 90px;
+}
+
+.itemLabel3 {
+  left: 175px;
+}
+
+.itemLabelRbBordered,
+.itemLabelRbLBordered {
+  border-bottom: 2px solid $border-200;
+}
+
+.itemLabelRbBordered {
+  border-right: 2px solid $border-200;
+}
+
+.itemLabelRbLBordered {
+  border-left: 2px solid $border-200;
+  border-right: 2px solid $border-200;
+}

@@ -19,19 +19,22 @@ export const ResultErrorsViewer = () => {
   const selectedPair = useResultErrors((state) => state.selectedPair)
   const { pairErrors, pairErrorsAreLoading } = usePairErrors(Number(comparisonId), selectedPair as number)
   const selectedError = useResultErrors((state) => state.selectedError)
-  const setCropRatio = useResultErrors((state) => state.setCropRatio)
+  const setIdOfError = useResultErrors((state) => state.setIdOfError)
   const setHoveredError = useResultErrors((state) => state.setHoveredError)
   const { pairErrors: newErrors } = usefilterPairErrors((state) => ({
     pairErrors: state.pairErrors,
   }))
 
   useEffect(() => {
-    if (selectedError && itemRefs.current[selectedError]) {
-      setTimeout(() => {
-        itemRefs.current[selectedError].scrollIntoView({ block: 'center', behavior: 'smooth' })
-      }, 100)
+    if (selectedError !== null) {
+      const element = document.getElementById(`List${selectedError}`)
+      if (element) {
+        console.log(element)
+        element.scrollIntoView({ block: 'center', behavior: 'smooth' })
+      }
     }
   }, [selectedError])
+
   if (pairErrorsAreLoading) {
     return (
       <Box className={classes.center}>
@@ -44,7 +47,7 @@ export const ResultErrorsViewer = () => {
     return 'Нет ошибок'
   }
 
-  const errorList = newErrors?.errors ? newErrors?.errors : pairErrors?.errors
+  const errorList = newErrors?.errors || pairErrors.errors
 
   const onChangeError = (errorChangeValue: string) => {
     if (errorChangeValue === 'previous' && errorId !== null && errorId > 0) {
@@ -57,22 +60,19 @@ export const ResultErrorsViewer = () => {
       setErrorId(errorId + 1)
     }
   }
+
   const handleClick = (pairError: any) => {
-    if (pairError.referenceCropRatio || pairError.sampleCropRatio) {
-      setCropRatio(pairError.referenceCropRatio)
-    } else if (pairError.barcodeCropRatio) {
-      setCropRatio(pairError.barcodeCropRatio)
-    } else {
-      setCropRatio(pairError.imageCropRatio)
-    }
+    setIdOfError(pairError.id)
   }
+
   return (
     <>
       <Box className={classes.errors}>
         {errorList.map((pairError: any, index: number) => (
-          <Box
+          <div
             className={cx(classes.item, { [classes.active]: pairError.id === selectedError })}
-            key={pairError.id}
+            id={`List${pairError.id}`}
+            key={index}
             onClick={() => {
               setError(pairError)
               setOpenModal(true)
@@ -80,7 +80,13 @@ export const ResultErrorsViewer = () => {
             }}
             onMouseEnter={() => setHoveredError(pairError.id)}
             onMouseLeave={() => setHoveredError(0)}
-            ref={(el: HTMLDivElement) => (itemRefs.current[pairError.id] = el)}
+            ref={(el: HTMLDivElement) => {
+              if (el) {
+                itemRefs.current[pairError.id] = el
+              } else {
+                delete itemRefs.current[pairError.id]
+              }
+            }}
           >
             <span>{`№ ${pairError.number} ${pairError.status?.name}`}</span>
             <span>Тип: {pairError.type?.name}</span>
@@ -98,7 +104,7 @@ export const ResultErrorsViewer = () => {
                 Zoom
               </Button>
             </Box>
-          </Box>
+          </div>
         ))}
       </Box>
       <ResultErrorsModal

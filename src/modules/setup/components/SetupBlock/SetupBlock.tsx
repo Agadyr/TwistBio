@@ -26,13 +26,11 @@ export const SetupBlock = () => {
         Выберите нужную страницу документа и зону для сравнения
       </Typography>
 
-      <Box>
-        <Box className={classes.comparisonZone}>
-          <SetupSelectionArea comparisonId={numComparisonId} isReference />
-          <SetupSelectionArea comparisonId={numComparisonId} isReference={false} />
-        </Box>
-        <SetupPagesPairs />
+      <Box className={classes.comparisonZone}>
+        <SetupSelectionArea comparisonId={numComparisonId} isReference />
+        <SetupSelectionArea comparisonId={numComparisonId} isReference={false} />
       </Box>
+      <SetupPagesPairs />
 
       <Box display="flex" gap={4}>
         <Button className={classes.next} variant="outlined">

@@ -19,6 +19,7 @@ export interface UseRemovedPages {
   referencePageFrames: Record<number, CropRatio>
   isExcludedFooterHeaderReference: boolean
   isExcludedFooterHeaderSample: boolean
+  selectedIndex: number | null
   removePage: (pageIndex: number, isReference: boolean) => void
   restorePage: (pageIndex: number, isReference: boolean) => void
   setActivePageIndex: (pageIndex: number, isReference: boolean) => void
@@ -26,6 +27,7 @@ export interface UseRemovedPages {
   setReferencePageFrame: (pageIndex: number, cropRatio: CropRatio) => void
   setExcludedFooterHeaderReference: (value: boolean) => void
   setExcludedFooterHeaderSample: (value: boolean) => void
+  setIndexOfSlicePage: (number: number) => void
 }
 
 export const useSelectedPages = create<UseRemovedPages>()(
@@ -43,6 +45,7 @@ export const useSelectedPages = create<UseRemovedPages>()(
       referencePageFrames: {},
       isExcludedFooterHeaderReference: false,
       isExcludedFooterHeaderSample: false,
+      selectedIndex: null,
       setActivePageIndex: (pageIndex, isReference) => {
         const key = isReference ? 'reference' : 'sample'
         set((prev) => ({ activePageIndex: { ...prev.activePageIndex, [key]: pageIndex } }))
@@ -68,6 +71,9 @@ export const useSelectedPages = create<UseRemovedPages>()(
       },
       setExcludedFooterHeaderSample: (value) => {
         set({ isExcludedFooterHeaderSample: value })
+      },
+      setIndexOfSlicePage: (number) => {
+        set({ selectedIndex: number })
       },
     }),
     {

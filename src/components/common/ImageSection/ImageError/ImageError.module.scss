@@ -1,0 +1,14 @@
+@import 'src/assets/scss/vars';
+
+.errorFrame {
+  position: absolute;
+  border: 1px red solid;
+}
+
+.errorNum {
+  position: absolute;
+  top: -20px;
+  left: 0;
+  z-index: 999;
+  color: rgb(0, 13, 255);
+}

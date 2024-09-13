@@ -17,11 +17,14 @@ export interface ComparisonFileResponse {
 
 export interface ComparisonFilesPagesResponse {
   items: ComparisonOutlineResponse[]
-  count: number
+  id: number
+  imageUrl: Array<string>
 }
 
 export interface ComparisonOutlineResponse extends FilePathWithPageNumber {
   id: number
+  count: number
+  firstPage: boolean
 }
 
 export interface ComparisonPairPayload {

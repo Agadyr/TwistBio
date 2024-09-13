@@ -9,7 +9,7 @@ interface Props {
 
 export const ImagePreview = forwardRef<HTMLImageElement, Props>(({ fileUrl, className, children }, ref) => (
   <>
-    <img className={className} ref={ref} src={fileUrl} />
+    <img className={className} loading="lazy" ref={ref} src={fileUrl} />
     {children}
   </>
 ))

@@ -9,6 +9,8 @@ import { useComparison } from 'modules/comparison/queries'
 import { usePairErrors } from 'modules/results/queries'
 import { useResultErrors } from 'modules/results/store'
 import { useComparisonPagesPairs } from 'modules/setup/queries'
+import { useComparisonFilesPages } from 'modules/setup/queries/useComparisonFilesPages'
+import { useSelectedPages } from 'modules/setup/store'
 import { loadAndCropImage } from 'packages/CropImage'
 import { pdfPreviewManager } from 'packages/pdfPreview'
 
@@ -32,20 +34,28 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
   const [croppedReferenceImgSrc, setCroppedReferenceImgSrc] = useState<string>()
   const [croppedMaskImgSrc, setCroppedMaskSrc] = useState<string>()
   const { comparison } = useComparison(Number(comparisonId))
-  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const { filesPages } = useComparisonFilesPages(comparisonId, true)
+  const selectedIndex = useSelectedPages((state) => state.selectedIndex)
+  const imageUrl = filesPages?.imageUrl || ''
 
-  console.log(error)
+  const referenceImageRef = useRef<HTMLImageElement>(null)
+  const sampleImageRef = useRef<HTMLImageElement>(null)
+  const maskImageRef = useRef<HTMLImageElement>(null)
+
+  const canvasRef = useRef<HTMLCanvasElement>(null)
 
   useEffect(() => {
     if (referencePage?.previewMlCroppedFullUrl && referencePage?.number !== undefined) {
       setReferenceImgSrc(referencePage?.previewMlCroppedFullUrl)
+    } else if (imageUrl && imageUrl !== null) {
+      setReferenceImgSrc(imageUrl[selectedIndex || 0])
     } else if (referencePage?.previewFullUrl && referencePage.number !== undefined) {
       pdfPreviewManager
         .getPreview(referencePage?.previewFullUrl, referencePage?.number)
         .then((img) => setSampleImgSrc(img))
         .catch(() => toast.error('Не удалось загрузить превью страницы'))
     }
-  }, [referencePage])
+  }, [referencePage, imageUrl])
 
   useEffect(() => {
     if (samplePage?.previewMlCroppedFullUrl && samplePage?.number !== undefined) {
@@ -57,13 +67,12 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
         .catch(() => toast.error('Не удалось загрузить превью страницы'))
     }
   }, [samplePage])
-
   useEffect(() => {
     if (!sampleImgSrc || !canvasRef.current) {
       return
     }
 
-    const cropRatio = error.sampleCropRatio || error.referenceCropRatio
+    const cropRatio = error.sampleBoxCropRatio || error.referenceBoxCropRatio
     loadAndCropImage(sampleImgSrc, cropRatio, setCroppedSampleImgSrc, canvasRef)
   }, [sampleImgSrc, canvasRef.current, error])
 
@@ -71,24 +80,24 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     if (!referenceImgSrc || !canvasRef.current) {
       return
     }
-
-    const cropRatio = error.sampleCropRatio || error.referenceCropRatio
+    const cropRatio = error.referenceBoxCropRatio || error.sampleBoxCropRatio
     loadAndCropImage(referenceImgSrc, cropRatio, setCroppedReferenceImgSrc, canvasRef)
   }, [referenceImgSrc, canvasRef.current, error])
+
   useEffect(() => {
     if (!sampleImgSrc || !canvasRef.current || !referenceImgSrc) {
       return
     }
     if ((error.type.name === 'Штрихкод' || error.type.name === 'Баркод') && pairErrors?.maskFullUrl) {
-      loadAndCropImage(sampleImgSrc, error.barcodeCropRatio, setCroppedSampleImgSrc, canvasRef)
-      loadAndCropImage(referenceImgSrc, error.barcodeCropRatio, setCroppedReferenceImgSrc, canvasRef)
-      loadAndCropImage(pairErrors?.maskFullUrl, error.barcodeCropRatio, setCroppedMaskSrc, canvasRef)
+      loadAndCropImage(sampleImgSrc, error.barcode_box_crop_ratio, setCroppedSampleImgSrc, canvasRef)
+      loadAndCropImage(referenceImgSrc, error.barcode_box_crop_ratio, setCroppedReferenceImgSrc, canvasRef)
+      loadAndCropImage(pairErrors?.maskFullUrl, error.barcode_box_crop_ratio, setCroppedMaskSrc, canvasRef)
     }
   }, [sampleImgSrc, canvasRef.current, error, pairErrors, referenceImgSrc])
 
   useEffect(() => {
     if (pairErrors && pairErrors?.maskFullUrl && canvasRef.current) {
-      loadAndCropImage(pairErrors?.maskFullUrl, error.sampleCropRatio, setCroppedMaskSrc, canvasRef)
+      loadAndCropImage(pairErrors?.maskFullUrl, error.sampleBoxCropRatio, setCroppedMaskSrc, canvasRef)
     }
   }, [
     pairErrors?.maskFullUrl,
@@ -97,6 +106,7 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
     canvasRef.current,
     error,
   ])
+  // console.log(error)
   return (
     <Box
       className={classes.images}
@@ -110,9 +120,24 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
         error.type.name !== 'Баркод' &&
         comparison?.stage.comparisonType !== 'текстовое сравнение' && (
           <>
-            <ImageSection src={croppedReferenceImgSrc} title="Эталон" />
-            <ImageSection src={croppedSampleImgSrc} title="Образец" />
-            <ImageSection src={croppedMaskImgSrc} title="Маска" />
+            <ImageSection
+              cropRatio={error.referenceInbox}
+              imageRef={referenceImageRef}
+              src={croppedReferenceImgSrc}
+              title="Эталон"
+            />
+            <ImageSection
+              cropRatio={error.sampleInbox}
+              imageRef={sampleImageRef}
+              src={croppedSampleImgSrc}
+              title="Образец"
+            />
+            <ImageSection
+              cropRatio={error.referenceInbox}
+              imageRef={maskImageRef}
+              src={croppedMaskImgSrc}
+              title="Маска"
+            />
           </>
         )}
 
@@ -126,32 +151,39 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
       {(error.type.name === 'Штрихкод' || error.type.name === 'Баркод') &&
         comparison?.stage.comparisonType !== 'текстовое сравнение' && (
           <>
-            <ImageSection src={croppedReferenceImgSrc} title="Эталон" />
-            <ImageSection src={croppedSampleImgSrc} title="Образец" />
-            <ImageSection src={croppedMaskImgSrc} title="Маска" />
+            <ImageSection imageRef={referenceImageRef} src={croppedReferenceImgSrc} title="Эталон" />
+            <ImageSection imageRef={sampleImageRef} src={croppedSampleImgSrc} title="Образец" />
+            <ImageSection imageRef={maskImageRef} src={croppedMaskImgSrc} title="Маска" />
           </>
         )}
 
       {error.type.name === 'Опечатка' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
-          <Box>
-            <Typography>Эталон</Typography>
-            <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
-          </Box>
-          <Box> {croppedSampleImgSrc && <ImageSection src={croppedSampleImgSrc} title="Образец" />} </Box>
+          <ImageSection
+            cropRatio={error.referenceInbox}
+            imageRef={referenceImageRef}
+            src={croppedReferenceImgSrc}
+            title="Эталон"
+          />
+          <ImageSection
+            cropRatio={error.sampleInbox}
+            imageRef={sampleImageRef}
+            src={croppedSampleImgSrc}
+            title="Образец"
+          />
         </>
       )}
 
       {error.type.name === 'Нет в эталоне' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
-          <ImageSection src="/chest.png" title="Эталон" />
+          <ImageSection cropRatio={error.referenceInbox} imageRef={referenceImageRef} src="/chest.png" title="Эталон" />
           <Box>
-            <Typography>Образец</Typography>
-            {!error.content ? (
-              <ImageSection src={croppedSampleImgSrc} title="Образец" />
-            ) : (
-              <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
-            )}
+            <ImageSection
+              cropRatio={error.sampleInbox}
+              imageRef={sampleImageRef}
+              src={croppedSampleImgSrc}
+              title="Образец"
+            />
           </Box>
         </>
       )}
@@ -159,14 +191,14 @@ export const ResultErrorsModalImages: FC<ResultErrorsModalProps> = ({ error }) =
       {error.type.name === 'Нет в образце' && comparison?.stage.comparisonType === 'текстовое сравнение' && (
         <>
           <Box>
-            <Typography>Эталон</Typography>
-            {!error.content ? (
-              <ImageSection src={croppedReferenceImgSrc} title="Эталон" />
-            ) : (
-              <TextErrorSection bestMatch={error.bestMatch} content={error.content} />
-            )}
+            <ImageSection
+              cropRatio={error.referenceInbox}
+              imageRef={referenceImageRef}
+              src={croppedReferenceImgSrc}
+              title="Эталон"
+            />
           </Box>
-          <ImageSection src="/chest.png" title="Образец" />
+          <ImageSection cropRatio={error.sampleCropRatio} imageRef={sampleImageRef} src="/chest.png" title="Образец" />
         </>
       )}
     </Box>

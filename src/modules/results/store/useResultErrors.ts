@@ -7,10 +7,12 @@ export interface UseResultErrors {
   selectedError: number
   hoveredError: number
   selectedCropRatio: CropRatio
+  idOfError: string
   setSelectedPair: (pairIndex: number) => void
   setSelectedError: (errorNum: number) => void
   setHoveredError: (errorNum: number) => void
   setCropRatio: (coordinates: CropRatio) => void
+  setIdOfError: (index: string) => void
   clearErrorSelection: () => void
 }
 
@@ -21,6 +23,7 @@ export const useResultErrors = create<UseResultErrors>()(
       selectedError: 0,
       hoveredError: 0,
       selectedCropRatio: [0, 0, 0, 0],
+      idOfError: '',
       setSelectedPair: (pairIndex) => {
         set({ selectedPair: pairIndex, selectedError: 0 })
       },
@@ -35,6 +38,9 @@ export const useResultErrors = create<UseResultErrors>()(
       },
       setCropRatio: (coordinates) => {
         set({ selectedCropRatio: coordinates })
+      },
+      setIdOfError: (index: string) => {
+        set({ idOfError: index })
       },
     }),
     {
