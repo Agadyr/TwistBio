@@ -4,6 +4,7 @@ build
 storybook-static
 *.log
 .env
+.env.dev.local
 .turbo
 .yarn/cache
 .yarn/install-state.gz
